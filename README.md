@@ -6,3 +6,5 @@ Este es el repositorio de Shadow Run, un runner de plataformas para dos jugadore
 - Raúl de Miguel Martín
 - Elisa Barba Ortiz
 - Jennifer Sofía Pardo Cepeda
+### Trello
+https://trello.com/b/m5z0CgSq/juegos-en-red
