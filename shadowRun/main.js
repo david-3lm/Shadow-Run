@@ -1,3 +1,6 @@
+import Menu from "./scenes/menu.js";
+import Level from "./scenes/level.js";
+
 window.onload= function(){
 
 var config = {
@@ -8,11 +11,11 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 300 },
+            gravity: { y: 600 },
             debug: false
         }
     },
-    scene: [menu, level]
+    scene: [ Level,Menu]
 };
 
 var game = new Phaser.Game(config);
