@@ -1,5 +1,6 @@
 import Menu from "./scenes/menu.js";
 import Level from "./scenes/level.js";
+import SceneBackground from "./scenes/sceneBackground.js";
 
 window.onload= function(){
 
@@ -15,7 +16,7 @@ var config = {
             debug: false
         }
     },
-    scene: [ Level,Menu]
+    scene: [Level, Menu]
 };
 
 var game = new Phaser.Game(config);
