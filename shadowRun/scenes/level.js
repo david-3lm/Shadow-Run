@@ -6,6 +6,9 @@ export default class Level extends Phaser.Scene {
         super({key:"Level"});
         this.velocity=500;
         this.buff=false;
+        this.particles = null;
+        this.emitter=null;
+        
     }
 
 preload()
@@ -17,6 +20,8 @@ preload()
    // this.load.image("bg", "assets/sprites/Background.png");
     this.load.image("platform", "assets/sprites/platform.png");
     this.load.image("orb","assets/sprites/orb.png");
+
+    this.load.atlas('flares', 'assets/sprites/flares.png', 'assets/sprites/flares.json');
   
 
     // //carga de sprites
@@ -36,22 +41,29 @@ create()
     this.scene.launch("SceneBackground",SceneBackground);
     this.scene.sendToBack("SceneBackground");
 
- 
-    // this.anims.create({
-    //     key: 'orbIdle',
-    //     frames: this.anims.generateFrameNumbers('orbBlue', { start: 0, end: 6, first: 0 }),
-    //     frameRate: 20,
-    //     repeat: -1
-    // });
-    
+    this.particles=this.add.particles('flares')
+
+   
     this.orbGroup = this.physics.add.staticGroup({
         key: 'orbBlue',
         frameQuantity: 1,
         immovable: true
     });
 
+    this.emitter=this.particles.createEmitter({
+        frame: 'blue',
+        lifespan: 600,
+        speed: { min: 10, max: 200 },
+        gravityY: 300,
+        scale: { start: 0.4, end: 0 },
+        quantity: 0.003,
+        blendMode: 'ADD'
+    });
+
+    
     var children = this.orbGroup.getChildren();
     children[0].setPosition(600,400).setScale(0.5);
+    this.emitter.startFollow(children[0]);
 
     this.orbGroup.children.iterate((c)=>{
         let tween=  this.tweens.add({
@@ -86,6 +98,8 @@ create()
 
 
 
+
+
  
 
     // //colisiones con obstaculos y mundo
@@ -109,10 +123,13 @@ update(time, delta)
 {
     this.player.setVelocityX(0);
     if(this.buff!=true){
-        this.timer=time
+        this.timer=time;
     }else if(time-this.timer>3000){
         this.buff=false;
         this.velocity=500;
+        this.emitter.stop();
+    }else{
+        this.emitter.startFollow(this.player);
     }
     if (this.cursors.left.isDown)
         {
