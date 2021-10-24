@@ -250,6 +250,8 @@ export default class SceneBackground extends Phaser.Scene {
             this.buildings2.x+=0.4;
             this.rails1.x+=0.4;
             this.rails2.x+=0.4;
+            this.fogfront1.x+=0.4;
+            this.fogfront2.x+=0.4;
         }
         else if (this.cursor.right.isDown)
         {
@@ -265,6 +267,8 @@ export default class SceneBackground extends Phaser.Scene {
             this.buildings2.x+=-0.4;
             this.rails1.x+=-0.4;
             this.rails2.x+=-0.4;
+            this.fogfront1.x+=-0.4;
+            this.fogfront2.x+=-0.4;
         }
 
         //Movimiento neblina delantera
@@ -275,8 +279,8 @@ export default class SceneBackground extends Phaser.Scene {
                 this.fogfront1.x=this.fogfront2.x+this.WIDTH;
             }
         }
-        this.fogfront1.x+=-0.05;
-        this.fogfront2.x+=-0.05;
+        this.fogfront1.x+=-0.1;
+        this.fogfront2.x+=-0.1;
 
         
         //movimiento naves
