@@ -13,10 +13,10 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 600 },
-            debug: false
+            debug: true
         }
     },
-    scene: [Level, Menu]
+    scene: [Level,SceneBackground, Menu]
 };
 
 var game = new Phaser.Game(config);

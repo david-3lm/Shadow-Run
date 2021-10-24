@@ -1,6 +1,6 @@
 export default class SceneBackground extends Phaser.Scene {
     constructor() {
-        super({key: "SceneBackground", active: true});
+        super({key: "SceneBackground"});
     }
 
     preload() {
