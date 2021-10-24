@@ -4,7 +4,10 @@ export default class Level extends Phaser.Scene {
 
     constructor(){
         super({key:"Level"});
-
+        this.velocity=800;
+        this.buff=false;
+        this.particles = null;
+        this.emitter=null;
         
     }
 
@@ -22,6 +25,7 @@ preload()
     // //carga de sprites
     this.load.spritesheet("orbBlue", "assets/spritesheets/blue_orbs_sprite1.png",{frameWidth:140,frameHeight:512,endFrame:8});
     
+    this.load.atlas('flares', 'assets/sprites/flares.png', 'assets/sprites/flares.json');
 
     //carga de plataformas
     this.load.image("Platform1","assets/sprites/Platform1.png");
@@ -43,22 +47,28 @@ create()
     this.scene.launch("SceneBackground",SceneBackground);
     this.scene.sendToBack("SceneBackground");
 
- 
-    // this.anims.create({
-    //     key: 'orbIdle',
-    //     frames: this.anims.generateFrameNumbers('orbBlue', { start: 0, end: 6, first: 0 }),
-    //     frameRate: 20,
-    //     repeat: -1
-    // });
-    
+    this.particles=this.add.particles('flares')
+   
     this.orbGroup = this.physics.add.staticGroup({
         key: 'orbBlue',
         frameQuantity: 1,
         immovable: true
     });
 
+    this.emitter=this.particles.createEmitter({
+        frame: 'blue',
+        lifespan: 600,
+        speed: { min: 10, max: 200 },
+        gravityY: 300,
+        scale: { start: 0.4, end: 0 },
+        quantity: 0.003,
+        blendMode: 'ADD'
+    });
+
     var children = this.orbGroup.getChildren();
     children[0].setPosition(600,400).setScale(0.5);
+
+    this.emitter.startFollow(children[0]);
 
     this.orbGroup.children.iterate((c)=>{
         let tween=  this.tweens.add({
@@ -319,7 +329,9 @@ create()
     this.cameras.main.followOffset.set(-100,0)
 
     // //comprobar overlap con orbes 
+    if(this.buff!=true){
     this.physics.add.overlap(this.player,this.orbGroup,this.orbeVelocidad, null, this);
+    }
 
     //objeto cursor para uso teclado;
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -328,14 +340,25 @@ create()
 update(time, delta)
 {
     this.player.setVelocityX(0);
+    if(this.buff!=true){
+        this.timer=time;
+    }else if(time-this.timer>3000){
+        this.buff=false;
+        this.velocity=800;
+        this.emitter.stop();
+    }else{
+        this.emitter.startFollow(this.player);
+    }
+
+
     if (this.cursors.left.isDown)
         {
-            this.player.setVelocityX(-550);
+            this.player.setVelocityX(-this.velocity);
             this.cameras.main.followOffset.x = 100;
         }
         else if (this.cursors.right.isDown)
         {
-            this.player.setVelocityX(550);
+            this.player.setVelocityX(this.velocity);
             this.cameras.main.followOffset.x = -100;
         }
         if (this.cursors.up.isDown && this.player.body.touching.down) 
@@ -350,6 +373,9 @@ orbeVelocidad(player,orbe) {
         console.log(player);
         this.orbGroup.killAndHide(orbe);
         orbe.body.enable = false;
+
+        this.velocity=1000;
+        this.buff=true;
     }
 
 }     
