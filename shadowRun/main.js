@@ -12,8 +12,8 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
-            gravity: { y: 600 },
-            debug: true
+            gravity: { y: 2000 },
+            debug: false
         }
     },
     scene: [Level,SceneBackground, Menu]

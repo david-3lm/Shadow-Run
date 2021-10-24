@@ -246,12 +246,12 @@ export default class SceneBackground extends Phaser.Scene {
                     this.rails1.x=this.rails2.x-this.WIDTH*2;
                 }
             }
-            this.buildings1.x+=0.4;
-            this.buildings2.x+=0.4;
-            this.rails1.x+=0.4;
-            this.rails2.x+=0.4;
-            this.fogfront1.x+=0.4;
-            this.fogfront2.x+=0.4;
+            this.buildings1.x+=0.5;
+            this.buildings2.x+=0.5;
+            this.rails1.x+=0.5;
+            this.rails2.x+=0.5;
+            this.fogfront1.x+=0.5;
+            this.fogfront2.x+=0.5;
         }
         else if (this.cursor.right.isDown)
         {
@@ -263,12 +263,12 @@ export default class SceneBackground extends Phaser.Scene {
                     this.rails1.x=this.rails2.x+this.WIDTH*2;
                 }
             }
-            this.buildings1.x+=-0.4;
-            this.buildings2.x+=-0.4;
-            this.rails1.x+=-0.4;
-            this.rails2.x+=-0.4;
-            this.fogfront1.x+=-0.4;
-            this.fogfront2.x+=-0.4;
+            this.buildings1.x+=-0.5;
+            this.buildings2.x+=-0.5;
+            this.rails1.x+=-0.5;
+            this.rails2.x+=-0.5;
+            this.fogfront1.x+=-0.5;
+            this.fogfront2.x+=-0.5;
         }
 
         //Movimiento neblina delantera
