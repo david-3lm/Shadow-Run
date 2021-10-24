@@ -4,8 +4,8 @@ export default class Level extends Phaser.Scene {
 
     constructor(){
         super({key:"Level"});
-
-        
+        this.velocity=500;
+        this.buff=false;
     }
 
 preload()
@@ -98,8 +98,9 @@ create()
     this.cameras.main.followOffset.set(-100,0)
 
     // //comprobar overlap con orbes 
+    if(this.buff!=true){
     this.physics.add.overlap(this.player,this.orbGroup,this.orbeVelocidad, null, this);
-
+    }
     //objeto cursor para uso teclado;
     this.cursors = this.input.keyboard.createCursorKeys();
 }
@@ -107,28 +108,37 @@ create()
 update(time, delta)
 {
     this.player.setVelocityX(0);
+    if(this.buff!=true){
+        this.timer=time
+    }else if(time-this.timer>3000){
+        this.buff=false;
+        this.velocity=500;
+    }
     if (this.cursors.left.isDown)
         {
-            this.player.setVelocityX(-500);
+            this.player.setVelocityX(-this.velocity);
             this.cameras.main.followOffset.x = 100;
         }
         else if (this.cursors.right.isDown)
         {
-            this.player.setVelocityX(500);
+            this.player.setVelocityX(this.velocity);
             this.cameras.main.followOffset.x = -100;
         }
         if (this.cursors.up.isDown && this.player.body.touching.down) 
         {
 
-            this.player.setVelocityY(-500);
+            this.player.setVelocityY(-this.velocity);
         }
    
 }
 
 orbeVelocidad(player,orbe) {
-        console.log(player);
         this.orbGroup.killAndHide(orbe);
         orbe.body.enable = false;
+
+        this.velocity=800;
+        this.buff=true;
+
     }
 
 }     
