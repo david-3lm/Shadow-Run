@@ -8,8 +8,15 @@ export default class Level extends Phaser.Scene {
         this.jump=-800;
         this.buff=false;
         this.particles = null;
-        this.emitter=null;
-        this.player=null;
+
+        this.emitterPB=null;
+        this.emitterPR=null;
+        this.emitterB=null;
+        this.emitterR=null;
+
+        this.playerB=null;
+        this.playerR=null;
+        
         
     }
 
@@ -25,10 +32,17 @@ preload()
   
 
     // //carga de sprites
-    this.load.spritesheet("orbBlue", "assets/spritesheets/blue_orbs_sprite1.png",{frameWidth:140,frameHeight:512,endFrame:8});
+    //orbes
+    this.load.image("orbBlueV", "assets/spritesheets/blue_orbs_2_sprite.png");
+    this.load.image("orbBlueJ", "assets/spritesheets/blue_orbs_sprite.png");
+    this.load.image("orbRedV", "assets/spritesheets/red_orbs_2_sprite.png");
+    this.load.image("orbRedJ", "assets/spritesheets/red_orbs_sprite.png");
 
-    this.load.spritesheet("pj", "assets/spritesheets/runBlueR.png",{frameWidth:79,frameHeight:128,endFrame:6});
+    //pjs
+    //this.load.spritesheet("pj", "assets/spritesheets/Prueba.jpeg",{frameWidth:300,frameHeight:450,endFrame:5});
+    this.load.spritesheet("pj", "assets/spritesheets/runBlueR.png",{ frameWidth: 64,frameHeight: 128, endFrame: 6});
     
+    //particulas
     this.load.atlas('flares', 'assets/sprites/flares.png', 'assets/sprites/flares.json');
 
     //carga de plataformas
@@ -53,13 +67,18 @@ create()
 
     this.particles=this.add.particles('flares');
    
-    this.orbGroup = this.physics.add.staticGroup({
-        key: 'orbBlue',
+    this.orbGroupB = this.physics.add.staticGroup({
+        key: 'orbBlueV',
+        frameQuantity: 1,
+        immovable: true
+    });
+    this.orbGroupR = this.physics.add.staticGroup({
+        key: 'orbRedV',
         frameQuantity: 1,
         immovable: true
     });
 
-    this.emitter=this.particles.createEmitter({
+    this.emitterB=this.particles.createEmitter({
         frame: 'blue',
         lifespan: 600,
         speed: { min: 10, max: 200 },
@@ -69,12 +88,66 @@ create()
         blendMode: 'ADD'
     });
 
-    var children = this.orbGroup.getChildren();
-    children[0].setPosition(600,400).setScale(0.5);
+    this.emitterPB=this.particles.createEmitter({
+        frame: 'blue',
+        lifespan: 600,
+        speed: { min: 10, max: 200 },
+        gravityY: 300,
+        scale: { start: 0.4, end: 0 },
+        quantity: 0.003,
+        blendMode: 'ADD'
+    });
 
-    this.emitter.startFollow(children[0]);
 
-    this.orbGroup.children.iterate((c)=>{
+    this.emitterR=this.particles.createEmitter({
+        frame: 'red',
+        lifespan: 600,
+        speed: { min: 10, max: 200 },
+        gravityY: 300,
+        scale: { start: 0.4, end: 0 },
+        quantity: 0.003,
+        blendMode: 'ADD'
+    });
+
+    this.emitterPR=this.particles.createEmitter({
+        frame: 'red',
+        lifespan: 600,
+        speed: { min: 10, max: 200 },
+        gravityY: 300,
+        scale: { start: 0.4, end: 0 },
+        quantity: 0.003,
+        blendMode: 'ADD'
+    });
+
+    var childrenB = this.orbGroupB.getChildren();
+    childrenB[0].setPosition(500,400).setScale(0.5);
+    this.emitterB.startFollow(childrenB[0]);
+
+    var childrenR = this.orbGroupR.getChildren();
+    childrenR[0].setPosition(700,400).setScale(0.5);
+    this.emitterR.startFollow(childrenR[0]);
+
+    this.orbGroupB.children.iterate((c)=>{
+        let tween=  this.tweens.add({
+        targets: c,
+        props: {
+            x:{
+                duration:789,
+                value: c.x+10
+             },
+            y:{
+                duration:500,
+               value: c.y+20
+            },
+        },
+        repeat: -1,
+        yoyo: true,
+        ease: function (t) {
+            return Math.pow(Math.sin(t * 500/360), 2);
+        }
+    })
+    });
+    this.orbGroupR.children.iterate((c)=>{
         let tween=  this.tweens.add({
         targets: c,
         props: {
@@ -96,16 +169,21 @@ create()
     });
 
     
-    this.orbGroup.refresh();
-
-   
-
-    //this.p=this.physics.add.staticImage(400,600, 'platform').setScale(4);
+    this.orbGroupB.refresh();
+    this.orbGroupR.refresh();
 
 
-    //this.player= this.physics.add.image(400,300,"dino").setScale(0.25);
-    //this.player= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
-    this.player= this.physics.add.sprite(0,0,"dino").setScale(0.75);
+    this.playerR= this.physics.add.image(400,300,"dino").setScale(0.5);
+    // this.anims.create({
+    //     key: 'run',
+    //     frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
+    //     frameRate: 8,
+    //     repeat: -1
+    // });
+    // this.playerR.anims.play('run');
+
+
+    this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
 
     this.anims.create({
         key: 'run',
@@ -113,9 +191,7 @@ create()
         frameRate: 8,
         repeat: -1
     });
-    this.player.anims.play('run');
-
-
+    this.playerB.anims.play('run');
 
 
 
@@ -407,8 +483,13 @@ create()
 
 
 
-    this.physics.add.collider(this.player, this.platforms);
-    //--------------Fin plataformas-------------
+    // //colisiones con obstaculos y mundo
+    this.physics.add.collider(this.playerB, this.platforms);
+    this.physics.add.collider(this.playerR, this.platforms);
+    this.playerB.setCollideWorldBounds(true);
+
+
+    //--------------Fin plataformas-------------//
 
  
 
@@ -416,18 +497,25 @@ create()
 
 
 
-    // //colisiones con obstaculos y mundo
-    this.physics.add.collider(this.player,this.p);
-    this.player.setCollideWorldBounds(true);
+
+
 
 
     //camara que seguirá a jugador
-    this.cameras.main.startFollow(this.player, true, 0.2, 0.2);
+    this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
     this.cameras.main.followOffset.set(-100,0)
 
     // //comprobar overlap con orbes 
-    if(this.buff!=true){
-    this.physics.add.overlap(this.player,this.orbGroup,this.orbeVelocidad, null, this);
+    if(this.buff===false){
+    this.physics.add.overlap(this.playerB,this.orbGroupB,this.orbeVelocidadBV, null, this);
+    this.physics.add.overlap(this.playerB,this.orbGroupR,this.orbeVelocidadRV, null, this);
+    this.physics.add.overlap(this.playerB,this.orbGroupB,this.orbeVelocidadBJ, null, this);
+    this.physics.add.overlap(this.playerB,this.orbGroupR,this.orbeVelocidadRJ, null, this);
+
+    this.physics.add.overlap(this.playerR,this.orbGroupB,this.orbeVelocidadBV, null, this);
+    this.physics.add.overlap(this.playerR,this.orbGroupR,this.orbeVelocidadRV, null, this);
+    this.physics.add.overlap(this.playerR,this.orbGroupB,this.orbeVelocidadBJ, null, this);
+    this.physics.add.overlap(this.playerR,this.orbGroupR,this.orbeVelocidadRJ, null, this);
     }
 
     //objeto cursor para uso teclado;
@@ -436,49 +524,102 @@ create()
 
 update(time, delta)
 {
-    this.player.setVelocityX(0);
+    this.playerB.setVelocityX(0);
+    this.playerR.setVelocityX(0);
     if(this.buff!=true){
         this.timer=time;
     }else if(time-this.timer>3000){
         this.buff=false;
         this.velocity=600;
         this.jump=-800;
-        this.emitter.stop();
-    }else{
-        this.emitter.startFollow(this.player);
+        this.emitterPR.stop();
+        this.emitterPB.stop();
     }
 
+    console.log(this.buff);
 
     if (this.cursors.left.isDown)
         {
-            this.player.setVelocityX(-this.velocity);
-            this.player.flipX = true;
+            this.playerB.setVelocityX(-this.velocity);
+            this.playerB.flipX = true;
             this.cameras.main.followOffset.x = -100;
         }
         else if (this.cursors.right.isDown)
         {
-            this.player.setVelocityX(this.velocity);
-            this.player.flipX = false;
+            this.playerB.setVelocityX(this.velocity);
+            this.playerB.flipX = false;
             this.cameras.main.followOffset.x = -200;
            //this.player.play('run');
         }
-        if (this.cursors.up.isDown && this.player.body.touching.down) 
+        if (this.cursors.up.isDown && this.playerB.body.touching.down) 
         {
-            this.player.setVelocityY(this.jump);
+            this.playerB.setVelocityY(this.jump);
         } 
 
    
 }
 
-orbeVelocidad(player,orbe) {
-        console.log(player);
-        this.orbGroup.killAndHide(orbe);
+orbeVelocidadBV(player,orbe) {
+        this.emitterPB.start();
+        this.emitterPB.startFollow(player);
+        this.orbGroupB.killAndHide(orbe);
         orbe.body.enable = false;
+        this.emitterB.stop();
 
+        if(player==this.playerB){
         this.velocity=1000;
+        this.buff=true;
+        }else if(player== this.playerR){
+        this.velocity=300;
+        this.buff=true;
+        }
+    }
+orbeVelocidadRV(player,orbe) {
+        this.emitterPR.start();
+        this.emitterPR.startFollow(player);
+        this.orbGroupR.killAndHide(orbe);
+        orbe.body.enable = false;
+        this.emitterR.stop();
+
+        if(player==this.playerR){
+        this.velocity=1000;
+        this.buff=true;
+        }else if(player==this.playerB){
+        this.velocity=300;
+        this.buff=true;
+        }
+}
+orbeVelocidadBJ(player,orbe) {
+    this.emitterPB.start();
+        this.emitterPB.startFollow(player);
+        this.orbGroupB.killAndHide(orbe);
+        orbe.body.enable = false;
+        this.emitterB.stop();
+
+        if(player==this.playerB){
         this.jump=-1200;
         this.buff=true;
+        }else if(player== this.playerR){
+        this.jump=-300;
+        this.buff=true;
+        }
+}
+orbeVelocidadRJ(player,orbe) {
+    this.emitterPR.start();
+    this.emitterPR.startFollow(player);
+    this.orbGroupR.killAndHide(orbe);
+    orbe.body.enable = false;
+    this.emitterR.stop();
+
+    if(player==this.playerR){
+    this.jump=1000;
+    this.buff=true;
+    }else if(player==this.playerB){
+    this.velocity=300;
+    this.buff=true;
     }
+}
+
 
 }     
     
