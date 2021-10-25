@@ -4,10 +4,12 @@ export default class Level extends Phaser.Scene {
 
     constructor(){
         super({key:"Level"});
-        this.velocity=800;
+        this.velocity=600;
+        this.jump=-800;
         this.buff=false;
         this.particles = null;
         this.emitter=null;
+        this.player=null;
         
     }
 
@@ -24,6 +26,8 @@ preload()
 
     // //carga de sprites
     this.load.spritesheet("orbBlue", "assets/spritesheets/blue_orbs_sprite1.png",{frameWidth:140,frameHeight:512,endFrame:8});
+
+    this.load.spritesheet("pj", "assets/spritesheets/runBlueR.png",{frameWidth:79,frameHeight:128,endFrame:6});
     
     this.load.atlas('flares', 'assets/sprites/flares.png', 'assets/sprites/flares.json');
 
@@ -47,7 +51,7 @@ create()
     this.scene.launch("SceneBackground",SceneBackground);
     this.scene.sendToBack("SceneBackground");
 
-    this.particles=this.add.particles('flares')
+    this.particles=this.add.particles('flares');
    
     this.orbGroup = this.physics.add.staticGroup({
         key: 'orbBlue',
@@ -100,8 +104,15 @@ create()
 
 
     //this.player= this.physics.add.image(400,300,"dino").setScale(0.25);
-    this.player= this.physics.add.image(0,-300,"dino").setScale(0.5);
+    this.player= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
 
+    this.anims.create({
+        key: 'run',
+        frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
+        frameRate: 8,
+        repeat: -1
+    });
+    this.player.anims.play('run');
 
 
 
@@ -325,7 +336,7 @@ create()
 
 
     //camara que seguirá a jugador
-    this.cameras.main.startFollow(this.player, true, 0.2, 0.02);
+    this.cameras.main.startFollow(this.player, true, 0.2, 0.2);
     this.cameras.main.followOffset.set(-100,0)
 
     // //comprobar overlap con orbes 
@@ -344,7 +355,8 @@ update(time, delta)
         this.timer=time;
     }else if(time-this.timer>3000){
         this.buff=false;
-        this.velocity=800;
+        this.velocity=600;
+        this.jump=-800;
         this.emitter.stop();
     }else{
         this.emitter.startFollow(this.player);
@@ -354,18 +366,21 @@ update(time, delta)
     if (this.cursors.left.isDown)
         {
             this.player.setVelocityX(-this.velocity);
-            this.cameras.main.followOffset.x = 100;
+            this.player.flipX = true;
+            this.cameras.main.followOffset.x = -100;
         }
         else if (this.cursors.right.isDown)
         {
             this.player.setVelocityX(this.velocity);
-            this.cameras.main.followOffset.x = -100;
+            this.player.flipX = false;
+            this.cameras.main.followOffset.x = -200;
+           //this.player.play('run');
         }
         if (this.cursors.up.isDown && this.player.body.touching.down) 
         {
+            this.player.setVelocityY(this.jump);
+        } 
 
-            this.player.setVelocityY(-800);
-        }
    
 }
 
@@ -375,6 +390,7 @@ orbeVelocidad(player,orbe) {
         orbe.body.enable = false;
 
         this.velocity=1000;
+        this.jump=-1200;
         this.buff=true;
     }
 
