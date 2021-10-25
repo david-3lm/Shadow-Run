@@ -235,15 +235,17 @@ export default class SceneBackground extends Phaser.Scene {
             this.backbs2.x+=-0.3;
         }
 
-        //edificios del frente y raíles
+        //edificios del frente, raíles y niebla delantera
         if (this.cursor.left.isDown)
         {
             if(this.buildings1.x>=1){
                 this.buildings2.x=this.buildings1.x-this.WIDTH*2;
                 this.rails2.x=this.rails1.x-this.WIDTH*2;
+                this.fogfront2.x=this.fogfront1.x-this.WIDTH*2;
                 if(this.buildings2.x>=1){
                     this.buildings1.x=this.buildings2.x-this.WIDTH*2;
                     this.rails1.x=this.rails2.x-this.WIDTH*2;
+                    this.fogfront1.x=this.fogfront2.x-this.WIDTH*2;
                 }
             }
             this.buildings1.x+=0.5;
@@ -258,9 +260,11 @@ export default class SceneBackground extends Phaser.Scene {
             if(this.buildings1.x<=0){
                 this.buildings2.x=this.buildings1.x+this.WIDTH*2;
                 this.rails2.x=this.rails1.x+this.WIDTH*2;
+                this.fogfront2.x=this.fogfront1.x+this.WIDTH*2;
                 if(this.buildings2.x<=0){
                     this.buildings1.x=this.buildings2.x+this.WIDTH*2;
                     this.rails1.x=this.rails2.x+this.WIDTH*2;
+                    this.fogfront1.x=this.fogfront2.x+this.WIDTH*2;
                 }
             }
             this.buildings1.x+=-0.5;
@@ -273,6 +277,12 @@ export default class SceneBackground extends Phaser.Scene {
 
         //Movimiento neblina delantera
 
+        if(this.fogfront1.x>=1){
+            this.fogfront2.x=this.fogfront1.x-this.WIDTH;
+            if(this.fogfront2.x>=1){
+                this.fogfront1.x=this.fogfront2.x-this.WIDTH;
+            }
+        }
         if(this.fogfront1.x<=0){
             this.fogfront2.x=this.fogfront1.x+this.WIDTH;
             if(this.fogfront2.x<=0){
