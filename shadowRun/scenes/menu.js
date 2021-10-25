@@ -1,4 +1,5 @@
 import SceneBackground from "./sceneBackground.js";
+import MenuBackground from "./menuBackground.js";
 
 export default class Menu extends Phaser.Scene {
 
@@ -13,8 +14,8 @@ preload()
     // //carga de sprites
     // this.load.spritesheet();
 
-    this.scene.launch("SceneBackground",SceneBackground);
-    this.scene.sendToBack("SceneBackground");
+    this.scene.launch("MenuBackground",SceneBackground);
+    this.scene.sendToBack("MenuBackground");
 
     this.load.image("interface", "assets/menu/MENU_NEON.png");
     this.load.image("hover_r", "assets/menu/CUADRADO_SELEC_CODIGO.png");

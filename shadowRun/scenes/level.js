@@ -183,7 +183,9 @@ create()
     // this.playerR.anims.play('run');
 
 
-    this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
+    //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
+    this.playerB= this.physics.add.sprite(29000,-300,"dino").setScale(0.75); //Solo pàra pruebas eliminar después y usar la de arriba.
+
 
     this.anims.create({
         key: 'run',
@@ -480,7 +482,34 @@ create()
     this.platforms.create(28544,472,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(28800,600,'Platform1').setOrigin(0,0).refreshBody();
 
+    //12
+    this.platforms.create(29056,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(29312,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(29568,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(29568,856,'Platform1').setOrigin(0,0).refreshBody();
 
+    this.platforms.create(29056,344,'Platform3').setOrigin(0,0).refreshBody();
+
+    this.platforms.create(29824,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(30080,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(30336,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(30336,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(29824,728,'Platform2').setOrigin(0,0).refreshBody();
+    this.platforms.create(29952,344,'Platform1').setOrigin(0,0).refreshBody();
+
+    this.platforms.create(30592,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(30848,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(31104,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(31104,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(30592,728,'Platform2').setOrigin(0,0).refreshBody();
+    this.platforms.create(30720,344,'Platform1').setOrigin(0,0).refreshBody();
+
+    this.platforms.create(31360,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(31616,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(31872,856,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(31872,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(31360,728,'Platform2').setOrigin(0,0).refreshBody();
+    this.platforms.create(31488,344,'Platform1').setOrigin(0,0).refreshBody();
 
 
     // //colisiones con obstaculos y mundo
