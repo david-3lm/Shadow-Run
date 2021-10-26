@@ -40,7 +40,10 @@ preload()
 
     //pjs
     //this.load.spritesheet("pj", "assets/spritesheets/Prueba.jpeg",{frameWidth:300,frameHeight:450,endFrame:5});
-    this.load.spritesheet("pj", "assets/spritesheets/runBlueR.png",{ frameWidth: 64,frameHeight: 128, endFrame: 6});
+    this.load.spritesheet("pj", "assets/spritesheets/RED2.png",{ frameWidth: 410,frameHeight: 430, endFrame: 8});
+
+    // this.load.atlas('pj','assets/spritesheets/BLUE2.png','assets/spritesheets/blue2.json');
+    // this.load.json('blue2_anim','assets/spritesheets/blue2_anim.json');
     
     //particulas
     this.load.atlas('flares', 'assets/sprites/flares.png', 'assets/sprites/flares.json');
@@ -50,6 +53,9 @@ preload()
     this.load.image("Platform2","assets/sprites/Platform2.png");
     this.load.image("Platform3","assets/sprites/Platform3.png");
     this.load.image("PlatformM","assets/sprites/MovingPlatform.png");
+
+    //LASER
+    this.load.image("laser", "assets/sprites/Laser.png");
    
    
 
@@ -184,15 +190,25 @@ create()
 
 
     //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
-    this.playerB= this.physics.add.sprite(29000,-300,"dino").setScale(0.75); //Solo pàra pruebas eliminar después y usar la de arriba.
+    this.playerB= this.physics.add.sprite(200,-300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
 
 
     this.anims.create({
         key: 'run',
-        frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
+        frames: this.anims.generateFrameNumbers('pj', { frames: [ 0,1,2,3,4,5,6,7 ] }),
+        frameRate: 10,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'idle',
+        frames: this.anims.generateFrameNumbers('pj', { frames: [ 8 ] }),
         frameRate: 8,
         repeat: -1
     });
+    // this.dataAnim= this.cache.json.get('blue2_anim');
+    // this.anims.fromJSON(this.dataAnim);
+    // this.playerB.anims.play('runB');
+
     this.playerB.anims.play('run');
 
 
@@ -521,6 +537,7 @@ create()
     //--------------Fin plataformas-------------//
 
  
+    this.laser= this.add.image(0,0,"laser");
 
 
 
@@ -565,26 +582,33 @@ update(time, delta)
         this.emitterPB.stop();
     }
 
-    console.log(this.buff);
+    this.laser.setPosition.y=this.cameras.main.y;
 
     if (this.cursors.left.isDown)
         {
+            if(this.running!=true) this.playerB.anims.play('run'); this.running=true;
+
             this.playerB.setVelocityX(-this.velocity);
-            this.playerB.flipX = true;
+            this.playerB.flipX = false;
             this.cameras.main.followOffset.x = -100;
         }
         else if (this.cursors.right.isDown)
         {
+            if(this.running!=true) this.playerB.anims.play('run'); this.running=true;
+
             this.playerB.setVelocityX(this.velocity);
-            this.playerB.flipX = false;
+            this.playerB.flipX = true;
             this.cameras.main.followOffset.x = -200;
-           //this.player.play('run');
         }
         if (this.cursors.up.isDown && this.playerB.body.touching.down) 
         {
             this.playerB.setVelocityY(this.jump);
         } 
-
+        if (this.cursors.left.isUp&&this.cursors.right.isUp)
+        {
+        this.running=false;
+        this.playerB.anims.play("idle");
+        }
    
 }
 
