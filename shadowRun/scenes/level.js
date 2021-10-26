@@ -4,9 +4,12 @@ export default class Level extends Phaser.Scene {
 
     constructor(){
         super({key:"Level"});
-        this.velocity=600;
-        this.jump=-800;
-        this.buff=false;
+        this.velocityR=600;
+        this.jumpR=-800;
+        this.buffR=false;
+        this.velocityB=600;
+        this.jumpB=-800;
+        this.buffB=false;
         this.particles = null;
 
         this.emitterPB=null;
@@ -40,10 +43,8 @@ preload()
 
     //pjs
     //this.load.spritesheet("pj", "assets/spritesheets/Prueba.jpeg",{frameWidth:300,frameHeight:450,endFrame:5});
-    this.load.spritesheet("pj", "assets/spritesheets/RED2.png",{ frameWidth: 410,frameHeight: 430, endFrame: 8});
+    this.load.spritesheet("pj", "assets/spritesheets/BLUE2.png",{ frameWidth: 408,frameHeight: 363, endFrame: 9});
 
-    // this.load.atlas('pj','assets/spritesheets/BLUE2.png','assets/spritesheets/blue2.json');
-    // this.load.json('blue2_anim','assets/spritesheets/blue2_anim.json');
     
     //particulas
     this.load.atlas('flares', 'assets/sprites/flares.png', 'assets/sprites/flares.json');
@@ -195,13 +196,19 @@ create()
 
     this.anims.create({
         key: 'run',
-        frames: this.anims.generateFrameNumbers('pj', { frames: [ 0,1,2,3,4,5,6,7 ] }),
+        frames: this.anims.generateFrameNumbers('pj', { frames: [ 0,1,2,3,4,5,6 ] }),
         frameRate: 10,
         repeat: -1
     });
     this.anims.create({
         key: 'idle',
-        frames: this.anims.generateFrameNumbers('pj', { frames: [ 8 ] }),
+        frames: this.anims.generateFrameNumbers('pj', { frames: [8 ] }),
+        frameRate: 8,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'jump',
+        frames: this.anims.generateFrameNumbers('pj', { frames: [9 ] }),
         frameRate: 8,
         repeat: -1
     });
@@ -537,7 +544,7 @@ create()
     //--------------Fin plataformas-------------//
 
  
-    this.laser= this.add.image(0,0,"laser");
+    this.laser= this.add.image(0,0,"laser").setScale(2);
 
 
 
@@ -548,11 +555,11 @@ create()
 
 
     //camara que seguirá a jugador
-    this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
-    this.cameras.main.followOffset.set(-100,0)
+    this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
+    this.camera=this.cameras.main.followOffset.set(-100,0)
 
     // //comprobar overlap con orbes 
-    if(this.buff===false){
+    
     this.physics.add.overlap(this.playerB,this.orbGroupB,this.orbeVelocidadBV, null, this);
     this.physics.add.overlap(this.playerB,this.orbGroupR,this.orbeVelocidadRV, null, this);
     this.physics.add.overlap(this.playerB,this.orbGroupB,this.orbeVelocidadBJ, null, this);
@@ -562,7 +569,9 @@ create()
     this.physics.add.overlap(this.playerR,this.orbGroupR,this.orbeVelocidadRV, null, this);
     this.physics.add.overlap(this.playerR,this.orbGroupB,this.orbeVelocidadBJ, null, this);
     this.physics.add.overlap(this.playerR,this.orbGroupR,this.orbeVelocidadRJ, null, this);
-    }
+    
+
+    
 
     //objeto cursor para uso teclado;
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -572,47 +581,62 @@ update(time, delta)
 {
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
-    if(this.buff!=true){
+    if(this.buffB!=true){
         this.timer=time;
     }else if(time-this.timer>3000){
-        this.buff=false;
-        this.velocity=600;
-        this.jump=-800;
+        this.buffB=false;
+        this.velocityB=600;
+        this.jumpB=-800;
         this.emitterPR.stop();
         this.emitterPB.stop();
     }
 
-    this.laser.setPosition.y=this.cameras.main.y;
+    this.laser.y=this.playerB.y;
+    this.laser.x+=delta/20;
+
+  
 
     if (this.cursors.left.isDown)
-        {
-            if(this.running!=true) this.playerB.anims.play('run'); this.running=true;
+        {   
 
-            this.playerB.setVelocityX(-this.velocity);
-            this.playerB.flipX = false;
-            this.cameras.main.followOffset.x = -100;
-        }
-        else if (this.cursors.right.isDown)
+        if(!this.running&&this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
+            
+        this.playerB.setVelocityX(-this.velocityB);
+        this.playerB.flipX = false;
+        this.cameras.main.followOffset.x = -100;
+        
+    }
+    else if (this.cursors.right.isDown)
         {
-            if(this.running!=true) this.playerB.anims.play('run'); this.running=true;
+        if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
 
-            this.playerB.setVelocityX(this.velocity);
-            this.playerB.flipX = true;
-            this.cameras.main.followOffset.x = -200;
+        this.playerB.setVelocityX(this.velocityB);
+        this.playerB.flipX = true;
+        this.cameras.main.followOffset.x = -200;
+        }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
+        this.running=false;
         }
-        if (this.cursors.up.isDown && this.playerB.body.touching.down) 
-        {
-            this.playerB.setVelocityY(this.jump);
-        } 
-        if (this.cursors.left.isUp&&this.cursors.right.isUp)
+
+    if (this.cursors.up.isDown && this.playerB.body.touching.down) 
+    {
+        this.playerB.setVelocityY(this.jumpB);
+
+    
+    }else if (this.playerB.body.touching.down&& !this.running)
         {
         this.running=false;
         this.playerB.anims.play("idle");
         }
+
+    if(this.playerB.body.touching.down==false){
+        this.playerB.anims.play('jump');
+        this.running=false;
+    }
    
 }
 
 orbeVelocidadBV(player,orbe) {
+
         this.emitterPB.start();
         this.emitterPB.startFollow(player);
         this.orbGroupB.killAndHide(orbe);
@@ -620,14 +644,17 @@ orbeVelocidadBV(player,orbe) {
         this.emitterB.stop();
 
         if(player==this.playerB){
-        this.velocity=1000;
-        this.buff=true;
+        this.velocityB=1000;
+        this.buffB=true;
         }else if(player== this.playerR){
-        this.velocity=300;
-        this.buff=true;
-        }
+        this.velocityR=300;
+        this.buffR=true;
+        
+    }
+       
     }
 orbeVelocidadRV(player,orbe) {
+
         this.emitterPR.start();
         this.emitterPR.startFollow(player);
         this.orbGroupR.killAndHide(orbe);
@@ -635,14 +662,16 @@ orbeVelocidadRV(player,orbe) {
         this.emitterR.stop();
 
         if(player==this.playerR){
-        this.velocity=1000;
-        this.buff=true;
+        this.velocityR=1000;
+        this.buffR=true;
         }else if(player==this.playerB){
-        this.velocity=300;
-        this.buff=true;
-        }
+        this.velocityB=300;
+        this.buffB=true;
+        
+    }
 }
 orbeVelocidadBJ(player,orbe) {
+
     this.emitterPB.start();
         this.emitterPB.startFollow(player);
         this.orbGroupB.killAndHide(orbe);
@@ -650,14 +679,16 @@ orbeVelocidadBJ(player,orbe) {
         this.emitterB.stop();
 
         if(player==this.playerB){
-        this.jump=-1200;
-        this.buff=true;
+        this.jumpB=-1200;
+        this.buffB=true;
         }else if(player== this.playerR){
-        this.jump=-300;
-        this.buff=true;
-        }
+        this.velocityR=300;
+        this.buffR=true;
+        
+    }
 }
 orbeVelocidadRJ(player,orbe) {
+
     this.emitterPR.start();
     this.emitterPR.startFollow(player);
     this.orbGroupR.killAndHide(orbe);
@@ -665,12 +696,17 @@ orbeVelocidadRJ(player,orbe) {
     this.emitterR.stop();
 
     if(player==this.playerR){
-    this.jump=1000;
-    this.buff=true;
+    this.jumpR=1000;
+    this.buffR=true;
     }else if(player==this.playerB){
-    this.velocity=300;
-    this.buff=true;
-    }
+    this.velocityB=300;
+    this.buffB=true;
+    
+}
+}
+
+gameOver(){
+     console.log("end");
 }
 
 
