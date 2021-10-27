@@ -18,11 +18,11 @@ preload()
     this.load.image("hover_br", "assets/menu/CUADRADO_SELEC_CONFIG.png");
     this.load.image("hover_b", "assets/menu/CUADRADO_SELEC_TIENDA.png");
 
-    this.load.audio("nav_der", "assets/menu/Menu_nav_der.mp3");
-    this.load.audio("nav_izq", "assets/menu/Menu_nav_izq.mp3");
-    this.load.audio("nav_center", "assets/menu/Menu_nav_center.mp3");
-    this.load.audio("main_t", "assets/menu/ShadowRun_Maintheme.mp3");
-    this.load.audio("select", "assets/menu/Menu_select_alt.mp3");
+    this.load.audio("nav_der", "assets/SFX/Menu_nav_der.mp3");
+    this.load.audio("nav_izq", "assets/SFX/Menu_nav_izq.mp3");
+    this.load.audio("nav_center", "assets/SFX/Menu_nav_center.mp3");
+    this.load.audio("main_t", "assets/SFX/ShadowRun_Maintheme.mp3");
+    this.load.audio("select", "assets/SFX/Menu_select_alt.mp3");
     
 }
 

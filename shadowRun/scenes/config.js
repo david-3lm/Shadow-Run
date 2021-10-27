@@ -7,7 +7,7 @@ export default class Config extends Phaser.Scene {
         this.load.image("config", "assets/menu/CONFIG_MENU.png");
         this.load.image("back", "assets/menu/BACK_OPTION.png");
         this.load.image("controles", "assets/menu/CONTROLES.png");
-        this.load.audio("a_back", "assets/menu/Menu_back.mp3");
+        this.load.audio("a_back", "assets/SFX/Menu_back.mp3");
     }
 
     create(){

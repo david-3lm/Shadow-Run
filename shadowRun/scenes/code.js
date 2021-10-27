@@ -6,7 +6,7 @@ export default class Code extends Phaser.Scene {
     preload(){
         this.load.image("code", "assets/menu/CODE_MENU.png");
         this.load.image("back", "assets/menu/BACK_OPTION.png");
-        this.load.audio("a_back", "assets/menu/Menu_back.mp3");
+        this.load.audio("a_back", "assets/SFX/Menu_back.mp3");
     }
 
     create(){

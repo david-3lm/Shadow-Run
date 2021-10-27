@@ -25,6 +25,9 @@ export default class Level extends Phaser.Scene {
         this.keyW;
         this.keyD;
         
+        this.fin;
+
+        this.camera;
         
     }
 
@@ -69,11 +72,14 @@ preload()
     this.load.image("win", "assets/sprites/VICTORIA.png");
     this.load.image("lose", "assets/sprites/DERROTA.png");
 
+    //Bandera
+    this.load.image("flag", "assets/sprites/Flag.png");
+
     //LASER
     this.load.image("laser", "assets/sprites/Laser.png");
     
     //carga audio
-    this.load.audio("techcity", "assets/techCity.mp3");
+    this.load.audio("techcity", "assets/SFX/techCity.mp3");
    
    
 
@@ -302,7 +308,7 @@ create()
     this.orbGroupR2.refresh();
 
 
-    this.playerR= this.physics.add.sprite(200,300,"pjR").setScale(0.25);
+    this.playerR= this.physics.add.sprite(46000,300,"pjR").setScale(0.25);
     // this.anims.create({
     //     key: 'run',
     //     frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
@@ -313,7 +319,7 @@ create()
 
 
     //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
-    this.playerB= this.physics.add.sprite(400,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
+    this.playerB= this.physics.add.sprite(47000,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
 
 
     this.anims.create({
@@ -890,6 +896,9 @@ create()
     this.arrows.create(48128,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
 
 
+    //Bandera final
+    this.add.image(48500,92,"flag");
+
     //17
     this.platforms.create(48384,344,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(48640,344,'Platform1').setOrigin(0,0).refreshBody();
@@ -969,10 +978,15 @@ create()
     this.keyA= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.keyW= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.keyD= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+
+    
+    this.fin=false;
 }
 
 update(time, delta)
-{
+{ 
+    if(this.fin==false){
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
     if(this.buffB!=true){
@@ -998,6 +1012,17 @@ update(time, delta)
     this.laser.y=this.playerB.y;
     this.laser.x+=delta/3;
     if(this.laser.x>25000)this.laser.x+=delta/2.25;
+
+
+    if(this.playerB.y>950){
+        this.gameOver(this.playerB);
+    }
+    if(this.playerR.y>950){
+        this.gameOver(this.playerR);
+    }
+    if(this.playerB.x>48500){
+        this.victory();
+    }
 
 
     //Actualización del hitbox de las plataformas móviles
@@ -1089,6 +1114,17 @@ update(time, delta)
         this.runningR=false;
     }
 
+}else if(this.fin==true){
+    this.playerB.setVelocityX(0);
+    this.playerR.setVelocityX(0);
+    this.playerB.setVelocityY(0);
+    this.playerR.setVelocityY(0);
+    if(this.cursors.space.isDown){
+        console.log("ey");
+        this.scene.launch("Menu", Menu);
+        this.scene.stop("Level",Level);
+        }
+}
    
 }
 
@@ -1163,22 +1199,29 @@ orbeVelocidadRJ(player,orbe) {
 }
 
 gameOver(player){
+    this.fin=true;
     if(player==this.playerR){
-        this.add.image(0,0,"win");
+        this.add.image(this.playerB.x+200,this.playerB.y,"win");
+        this.add.image(this.playerR.x+200,this.playerR.y,"lose"); 
         }else if(player==this.playerB){
-        this.add.image(0,0,"lose");
+        this.add.image(this.playerR.x+200,this.playerR.y,"win");
+        this.add.image(this.playerB.x+200,this.playerB.y,"lose");   
         
     }
-
-    this.scene.launch("Menu", Menu);
-    this.scene.stop("Level",Level);
+    
 }
 
 catch(){
 
-    this.add.image(0,0,"lose");
-    this.scene.launch("Menu", Menu);
-    this.scene.stop("Level",Level);
+    this.fin=true;
+    this.add.image(this.playerB.x+200,this.playerB.y,"lose"); 
+
+}
+
+victory(){
+    this.fin=true;
+    this.add.image(this.playerB.x+200,this.playerB.y,"win");
+    this.add.image(this.playerR.x+200,this.playerR.y,"lose"); 
 }
 
 
