@@ -334,7 +334,7 @@ create()
     //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
     this.playerB= this.physics.add.sprite(500,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
 
-    this.tt=this.add.image(400,300,"tutorial");
+    this.tt=this.add.image(400,170,"tutorial").setScale(0.8);
     this.tuto=true;
     console.log(this.tt);
 
@@ -967,8 +967,9 @@ create()
 
 
     //camara que seguirá a jugador
-    this.camera=this.cameras.main;
+    this.camera=this.cameras.main.setSize(900,300);
     this.camera=this.cameras.main.followOffset.set(-100,0);
+    this.camera2=this.cameras.add(0, 300, 900, 300);
 
     // //comprobar overlap con orbes 
     
@@ -1008,8 +1009,9 @@ update(time, delta)
     if(this.fin==false && this.tuto==false){
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
-    if(this.buffB!=true){
+    if(this.buffB!=true ||this.newBuffB==true){
         this.timerB=time;
+        this.newBuffB=false;
     }else if(time-this.timerB>3000){
         this.buffB=false;
         this.velocityB=600;
@@ -1017,7 +1019,7 @@ update(time, delta)
         this.emitterPB.stop();
         this.emitterPR.stop();
     }
-    if(this.buffR!=true){
+    if(this.buffR!=true || this.newBuffR==true){
         this.timerR=time;
     }else if(time-this.timerR>3000){
         this.buffR=false;
@@ -1159,6 +1161,7 @@ update(time, delta)
         this.playerB.body.gravity.y=0;
         this.playerR.body.gravity.y=0;
         this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
+        this.camera2.startFollow(this.playerR, true, 0.2, 0.2)
         this.musicLvl.play({
             mute: false,
             volume: 0.15,
@@ -1184,10 +1187,12 @@ orbeVelocidadBV(player,orbe) {
         if(player==this.playerB){
         this.orbFine.play();
         this.velocityB=1000;
+        this.newBuffB=true;
         this.buffB=true;
         }else if(player== this.playerR){
         this.orbBad.play();
         this.velocityR=300;
+        this.newBuffR=true;
         this.buffR=true;
         
     }
@@ -1204,10 +1209,12 @@ orbeVelocidadRV(player,orbe) {
         if(player==this.playerR){
         this.orbFine.play();
         this.velocityR=1000;
+        this.newBuffR=true;
         this.buffR=true;
         }else if(player==this.playerB){
         this.orbBad.play();
         this.velocityB=300;
+        this.newBuffB=true;
         this.buffB=true;
         
     }
@@ -1223,10 +1230,12 @@ orbeVelocidadBJ(player,orbe) {
         if(player==this.playerB){
         this.orbFine.play();
         this.jumpB=-1200;
+        this.newBuffB=true;
         this.buffB=true;
         }else if(player== this.playerR){
         this.orbBad.play();
         this.velocityR=300;
+        this.newBuffR=true;
         this.buffR=true;
         
     }
@@ -1242,10 +1251,12 @@ orbeVelocidadRJ(player,orbe) {
     if(player==this.playerR){
     this.orbFine.play();
     this.jumpR=-1200;
+    this.newBuffR=true;
     this.buffR=true;
     }else if(player==this.playerB){
     this.orbBad.play();
     this.velocityB=300;
+    this.newBuffB=true;
     this.buffB=true;
     
 }
@@ -1253,12 +1264,15 @@ orbeVelocidadRJ(player,orbe) {
 
 gameOver(player){
     this.fin=true;
+    this.musicLvl.stop();
+    this.lostA.play();
     if(player==this.playerR){
-        this.add.image(this.playerB.x+200,this.playerB.y,"win");
-        this.add.image(this.playerR.x+200,this.playerR.y,"lose"); 
+
+        this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
+        this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
         }else if(player==this.playerB){
-        this.add.image(this.playerR.x+200,this.playerR.y,"win");
-        this.add.image(this.playerB.x+200,this.playerB.y,"lose");   
+        this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
+        this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8);   
         
     }
     
@@ -1267,14 +1281,15 @@ gameOver(player){
 catch(){
 
     this.fin=true;
-    this.add.image(this.playerB.x+200,this.playerB.y,"lose"); 
+    this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8); 
 
 }
 
 victory(){
+    this.winA.play();
     this.fin=true;
-    this.add.image(this.playerB.x+200,this.playerB.y,"win");
-    this.add.image(this.playerR.x+200,this.playerR.y,"lose"); 
+    this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
+    this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
 }
 
 
