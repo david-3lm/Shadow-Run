@@ -8,9 +8,11 @@ export default class Menu extends Phaser.Scene {
 
 preload()
 {
+    //Escena de la ciudad para el fondo del menu
     this.scene.launch("MenuBackground",MenuBackground);
     this.scene.sendToBack("MenuBackground");
 
+    //carga de imagenes
     this.load.image("interface", "assets/menu/MENU_NEON.png");
     this.load.image("hover_r", "assets/menu/CUADRADO_SELEC_CODIGO.png");
     this.load.image("hover_l", "assets/menu/CUADRADO_SELEC_PLAY.png");
@@ -18,6 +20,7 @@ preload()
     this.load.image("hover_br", "assets/menu/CUADRADO_SELEC_CONFIG.png");
     this.load.image("hover_b", "assets/menu/CUADRADO_SELEC_TIENDA.png");
 
+    //carga de audios
     this.load.audio("nav_der", "assets/menu/Menu_nav_der.mp3");
     this.load.audio("nav_izq", "assets/menu/Menu_nav_izq.mp3");
     this.load.audio("nav_center", "assets/menu/Menu_nav_center.mp3");
@@ -29,22 +32,13 @@ preload()
 create()
 {
 
-    // //limites camara (fuera escena)
-    // this.cameras.main.setBounds();
-    // this.add.image();
-    // //colisiones con obstaculos
-    // this.physics.add.collider();
-    // //camara que seguirá a jugador
-    // this.cameras.main.startFollow();
-    // //comprobar overlap con orbes 
-    // this.physics.add.overlap();
-    // //objeto cursor para uso teclado;
-    // this.cursors = this.input.keyboard.createCursorKeys();
-
+    //interfaz con el dibujo de botones, titulo, etc.
     this.interface= this.add.image(-5,0,"interface").setScale(0.9).setOrigin(0,-0.05);
     this.interface.depth = 0.1;
 
+    //AUDIO(MUSICA)
     this.music = this.sound.add("main_t");
+    //su configuracion
     var mConfig = {
         mute: false,
         volume: 0.25,
@@ -54,9 +48,12 @@ create()
         loop: true,
         delay: 0
     }
+    //su activacion
     this.music.play(mConfig);
 
-    //hover con sus posiciones iniciales(fuera de la pantalla) y finales(donde encajan)
+    //bajo la imagen de interfaz se colocan imagenes que cuadran con los botones para simular una especie de hover
+    //a cada hover(imagen) se le crea atributos con sus posiciones iniciales(fuera de la pantalla) y finales(donde encajan)
+    //Hover para las casillas:
 
     //code
     this.hover_r=this.add.image(950,280,"hover_r");
@@ -83,19 +80,18 @@ create()
     this.hover_b.starty = 630;
     this.hover_b.endy = 520;
 
-    //teclado
+    //-----------
+    //TECLADO
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    console.log(this.hover_b.y)
-
-    //audio
-
+    //AUDIO
     this.a_navder = this.sound.add("nav_der");
     this.a_navizq = this.sound.add("nav_izq");
     this.a_navcenter = this.sound.add("nav_center");
     this.a_select = this.sound.add("select");
 
-    //estado 
+    //El jugador por defecto estará en play
+    //Estado se utilizará para saber en que opcion se encuentra el jugador cuando vaya a seleccionar
     this.estado = "play";
 }
 
@@ -106,8 +102,8 @@ update(time, delta)
 
     if (this.cursors.right.isDown){
 
+        //si se encontraba en credits la tecla derecha va a (va no selecciona)
         //TIENDA
-        //si se encontraba en credits
         if(this.hover_bl.y == this.hover_bl.endy){
 
             //audio
@@ -126,8 +122,8 @@ update(time, delta)
             this.estado = "tienda";
         }
 
+        //si se encontraba en tienda la tecla derecha va a
         //CONFIGURACION
-        //si se encontraba en tienda
         if(this.hover_b.y == this.hover_b.endy){
 
             //audio    
@@ -146,8 +142,8 @@ update(time, delta)
 
         }
 
+        //si se encontraba en play la tecla derecha va a
         //CODE
-        //si se encontraba en play
         if(this.hover_l.x == this.hover_l.startx){
 
             //sonido
@@ -173,8 +169,8 @@ update(time, delta)
 
     if (this.cursors.left.isDown){
 
-        //TIENDA
         //si se encontraba en configuracion
+        //TIENDA
         if(this.hover_br.y == this.hover_br.endy){
 
             //audio
@@ -192,8 +188,8 @@ update(time, delta)
             this.estado = "tienda";
         }
     
-        //CREDITOS
-        //si se encontraba en tienda    
+        //si se encontraba en tienda 
+        //CREDITOS   
         if(this.hover_b.y == this.hover_b.endy){
     
             //audio
@@ -211,8 +207,8 @@ update(time, delta)
             this.estado = "creditos";
         }
 
-        //PLAY
         //si se encontraba en code
+        //PLAY
         if(this.hover_r.x != this.hover_r.startx){
 
             //audio
@@ -235,7 +231,7 @@ update(time, delta)
     //TECLA ABAJO
 
     //CREDITOS
-    ////si se encontraba en play
+    //si se encontraba en play
     if (this.cursors.down.isDown && this.hover_l.x == this.hover_l.startx){
 
         this.a_navder.play();
@@ -254,7 +250,7 @@ update(time, delta)
     }
 
     //CONFIGURACION
-    ////si se encontraba en code
+    //si se encontraba en code
     if (this.cursors.down.isDown && this.hover_r.x == this.hover_r.endx){
 
         this.a_navizq.play();
@@ -312,9 +308,14 @@ update(time, delta)
     
     }
 
+    //TECLA DE SELECCION 
     if(this.cursors.space.isDown){
+        //audio para seleccion
         this.a_select.play();
 
+        //En funcion del estado(en que opcion esta el jugador) inicia esa escena y duerme la actual
+
+        //opcion play
         if (this.estado == "play"){
             this.scene.launch("Level");
             this.scene.stop("Menu");
@@ -322,21 +323,25 @@ update(time, delta)
                
         }
 
+        //op creditos
         if(this.estado == "creditos"){
             this.scene.launch("Credits");
             this.scene.sleep("Menu");
         }
 
+        //op code
         if(this.estado == "code"){
             this.scene.launch("Code");
             this.scene.sleep("Menu");
         }
 
+        //op tienda
         if(this.estado == "tienda"){
             this.scene.launch("Tienda");
             this.scene.sleep("Menu");
         }
 
+        //op configuracion
         if(this.estado == "configuracion"){
             this.scene.launch("Config");
             this.scene.sleep("Menu");
