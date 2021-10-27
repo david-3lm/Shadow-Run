@@ -68,6 +68,9 @@ preload()
 
     //LASER
     this.load.image("laser", "assets/sprites/Laser.png");
+    
+    //carga audio
+    this.load.audio("techcity", "assets/techCity.mp3");
    
    
 
@@ -76,6 +79,23 @@ preload()
 
 create()
 {
+    //audio para el nivel
+    this.musicLvl = this.sound.add("techcity");
+    
+    //configuracion audio
+    var mConfig = {
+        mute: false,
+        volume: 0.25,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0
+    }
+    
+    //activa la musica(audio)
+    this.musicLvl.play(mConfig);
+    
     //limites camara (fuera escena)
     this.cameras.main.setBounds(0, -600*5, 900 * 200, 600 * 10);
     this.physics.world.setBounds(0, -600*5, 900*200, 600*10);
