@@ -325,6 +325,10 @@ update(time, delta)
         if(this.estado == "creditos"){
             this.scene.launch("Credits");
             this.scene.sleep("Menu");
+            this.hover_bl.y = this.hover_bl.starty;
+            this.hover_l.x = this.hover_l.startx;
+            this.estado = "play";
+            this.scene.sleep("Menu");
         }
 
         if(this.estado == "code"){
@@ -334,6 +338,10 @@ update(time, delta)
 
         if(this.estado == "tienda"){
             this.scene.launch("Tienda");
+            this.scene.sleep("Menu");
+            this.hover_b.y = this.hover_b.starty;
+            this.hover_l.x = this.hover_l.startx;
+            this.estado = "play";
             this.scene.sleep("Menu");
         }
 
