@@ -44,6 +44,7 @@ preload()
     //pjs
     //this.load.spritesheet("pj", "assets/spritesheets/Prueba.jpeg",{frameWidth:300,frameHeight:450,endFrame:5});
     this.load.spritesheet("pj", "assets/spritesheets/BLUE2.png",{ frameWidth: 408,frameHeight: 363, endFrame: 9});
+    this.load.spritesheet("pjR", "assets/spritesheets/RED2.png",{ frameWidth: 408,frameHeight: 363, endFrame: 9});
 
     
     //particulas
@@ -245,7 +246,7 @@ create()
     this.orbGroupR2.refresh();
 
 
-    this.playerR= this.physics.add.image(400,300,"dino").setScale(0.5);
+    this.playerR= this.physics.add.sprite(400,300,"pjR").setScale(0.25);
     // this.anims.create({
     //     key: 'run',
     //     frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
@@ -277,10 +278,27 @@ create()
         frameRate: 8,
         repeat: -1
     });
-    // this.dataAnim= this.cache.json.get('blue2_anim');
-    // this.anims.fromJSON(this.dataAnim);
-    // this.playerB.anims.play('runB');
 
+    this.anims.create({
+        key: 'runR',
+        frames: this.anims.generateFrameNumbers('pjR', { frames: [ 0,1,2,3,4,5,6 ] }),
+        frameRate: 10,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'idleR',
+        frames: this.anims.generateFrameNumbers('pjR', { frames: [8 ] }),
+        frameRate: 8,
+        repeat: -1
+    });
+    this.anims.create({
+        key: 'jumpR',
+        frames: this.anims.generateFrameNumbers('pjR', { frames: [9 ] }),
+        frameRate: 8,
+        repeat: -1
+    });
+
+    this.playerR.anims.play('idleR');
     this.playerB.anims.play('run');
 
 
@@ -762,7 +780,7 @@ create()
     //--------------Fin plataformas-------------//
 
  
-    this.laser= this.add.image(0,0,"laser").setScale(2);
+    this.laser= this.physics.add.image(-1500,0,"laser").setScale(2);
 
 
 
@@ -774,7 +792,7 @@ create()
 
     //camara que seguirá a jugador
     this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
-    this.camera=this.cameras.main.followOffset.set(-100,0)
+    this.camera=this.cameras.main.followOffset.set(-100,0);
 
     // //comprobar overlap con orbes 
     
@@ -787,12 +805,17 @@ create()
     this.physics.add.overlap(this.playerR,this.orbGroupR,this.orbeVelocidadRV, null, this);
     this.physics.add.overlap(this.playerR,this.orbGroupB2,this.orbeVelocidadBJ, null, this);
     this.physics.add.overlap(this.playerR,this.orbGroupR2,this.orbeVelocidadRJ, null, this);
-    
 
+    this.physics.add.overlap(this.playerB,this.laser,this.gameOver,null,this);
+    this.physics.add.overlap(this.playerR,this.laser,this.gameOver,null,this);
+    this.physics.add.overlap(this.playerB,this.playerR,this.catch,null,this);
     
+        
 
     //objeto cursor para uso teclado;
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    var keys = this.input.keyboard.addKeys('W,S,A,D');
 }
 
 update(time, delta)
@@ -810,9 +833,14 @@ update(time, delta)
     }
 
     this.laser.y=this.playerB.y;
-    this.laser.x+=delta/20;
+    this.laser.x+=delta/3;
+    if(this.laser.x>25000)this.laser.x+=delta/2.25;
+
+
 
   
+    //Controles del que huye
+
 
     if (this.cursors.left.isDown)
         {   
@@ -850,6 +878,49 @@ update(time, delta)
         this.playerB.anims.play('jump');
         this.running=false;
     }
+
+    // this.playerR.body.followTarget(this.playerB);
+
+
+    // //Controles del que persigue
+
+
+    // if (this.keys.W)
+    //     {   
+
+    //     if(!this.running&&this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
+            
+    //     this.playerB.setVelocityX(-this.velocityB);
+    //     this.playerB.flipX = false;
+    //     this.cameras.main.followOffset.x = -100;
+        
+    // }
+    // else if (this.cursors.right.isDown)
+    //     {
+    //     if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
+
+    //     this.playerB.setVelocityX(this.velocityB);
+    //     this.playerB.flipX = true;
+    //     this.cameras.main.followOffset.x = -200;
+    //     }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
+    //     this.running=false;
+    //     }
+
+    // if (this.cursors.up.isDown && this.playerB.body.touching.down) 
+    // {
+    //     this.playerB.setVelocityY(this.jumpB);
+
+    
+    // }else if (this.playerB.body.touching.down&& !this.running)
+    //     {
+    //     this.running=false;
+    //     this.playerB.anims.play("idle");
+    //     }
+
+    // if(this.playerB.body.touching.down==false){
+    //     this.playerB.anims.play('jump');
+    //     this.running=false;
+    // }
    
 }
 
@@ -925,6 +996,10 @@ orbeVelocidadRJ(player,orbe) {
 
 gameOver(){
      console.log("end");
+}
+
+catch(){
+    console.log("pillado")
 }
 
 
