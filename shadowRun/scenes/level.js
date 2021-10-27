@@ -80,6 +80,16 @@ preload()
     
     //carga audio
     this.load.audio("techcity", "assets/SFX/techCity.mp3");
+    this.load.audio("jumpA", "assets/SFX/Jump.mp3");
+    this.load.audio("death", "assets/SFX/Death.mp3");
+    this.load.audio("lost", "assets/SFX/Lose.mp3");
+    this.load.audio("won", "assets/SFX/Victory.mp3");
+    this.load.audio("orbBad", "assets/SFX/Orb_bad.mp3");
+    this.load.audio("orbFine", "assets/SFX/Orb_fine.mp3");
+
+
+    //Tutorial
+    this.load.image("tutorial", "assets/sprites/tutorial.png");
    
    
 
@@ -88,22 +98,25 @@ preload()
 
 create()
 {
+    this.scene.get("Menu").music.stop();
     //audio para el nivel
     this.musicLvl = this.sound.add("techcity");
+
+    this.jumpA = this.sound.add("jumpA");
+    this.death = this.sound.add("death");
+    this.lostA = this.sound.add("lost");
+    this.winA = this.sound.add("won");
+    this.orbBad = this.sound.add("orbBad");
+    this.orbFine = this.sound.add("orbFine");
+
+
+
     
     //configuracion audio
-    var mConfig = {
-        mute: false,
-        volume: 0.25,
-        rate: 1,
-        detune: 0,
-        seek: 0,
-        loop: true,
-        delay: 0
-    }
     
-    //activa la musica(audio)
-    this.musicLvl.play(mConfig);
+    
+    ////activa la musica(audio)
+    // this.musicLvl.play(mConfig);
     
     //limites camara (fuera escena)
     this.cameras.main.setBounds(0, -600*5, 900 * 200, 600 * 10);
@@ -308,7 +321,7 @@ create()
     this.orbGroupR2.refresh();
 
 
-    this.playerR= this.physics.add.sprite(46000,300,"pjR").setScale(0.25);
+    this.playerR= this.physics.add.sprite(150,300,"pjR").setScale(0.25);
     // this.anims.create({
     //     key: 'run',
     //     frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
@@ -319,8 +332,11 @@ create()
 
 
     //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
-    this.playerB= this.physics.add.sprite(47000,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
+    this.playerB= this.physics.add.sprite(500,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
 
+    this.tt=this.add.image(400,300,"tutorial");
+    this.tuto=true;
+    console.log(this.tt);
 
     this.anims.create({
         key: 'run',
@@ -951,7 +967,7 @@ create()
 
 
     //camara que seguirá a jugador
-    this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
+    this.camera=this.cameras.main;
     this.camera=this.cameras.main.followOffset.set(-100,0);
 
     // //comprobar overlap con orbes 
@@ -980,13 +996,16 @@ create()
     this.keyD= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 
 
+
+
+
     
     this.fin=false;
 }
 
 update(time, delta)
 { 
-    if(this.fin==false){
+    if(this.fin==false && this.tuto==false){
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
     if(this.buffB!=true){
@@ -1057,6 +1076,8 @@ update(time, delta)
 
     if (this.cursors.up.isDown && this.playerB.body.touching.down) 
     {
+        this.jumpA.play();
+
         this.playerB.setVelocityY(this.jumpB);
 
     
@@ -1100,6 +1121,7 @@ update(time, delta)
 
     if (this.keyW.isDown && this.playerR.body.touching.down) 
     {
+        
         this.playerR.setVelocityY(this.jumpR);
 
     
@@ -1107,6 +1129,7 @@ update(time, delta)
         {
         this.runningR=false;
         this.playerR.anims.play("idleR");
+
         }
 
     if(this.playerR.body.touching.down==false){
@@ -1115,14 +1138,36 @@ update(time, delta)
     }
 
 }else if(this.fin==true){
+    this.playerB.body.gravity.y=-2000;
+    this.playerR.body.gravity.y=-2000;
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
     this.playerB.setVelocityY(0);
     this.playerR.setVelocityY(0);
+    
+
     if(this.cursors.space.isDown){
-        console.log("ey");
+        this.musicLvl.stop();
         this.scene.launch("Menu", Menu);
         this.scene.stop("Level",Level);
+        }
+}else if(this.tuto==true){
+    this.playerB.body.gravity.y=-2000;
+    this.playerR.body.gravity.y=-2000;
+    if(this.cursors.space.isDown){
+        this.tuto=false;
+        this.playerB.body.gravity.y=0;
+        this.playerR.body.gravity.y=0;
+        this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
+        this.musicLvl.play({
+            mute: false,
+            volume: 0.15,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        });
         }
 }
    
@@ -1137,9 +1182,11 @@ orbeVelocidadBV(player,orbe) {
         //this.emitterB.stop();
 
         if(player==this.playerB){
+        this.orbFine.play();
         this.velocityB=1000;
         this.buffB=true;
         }else if(player== this.playerR){
+        this.orbBad.play();
         this.velocityR=300;
         this.buffR=true;
         
@@ -1155,9 +1202,11 @@ orbeVelocidadRV(player,orbe) {
         //this.emitterR.stop();
 
         if(player==this.playerR){
+        this.orbFine.play();
         this.velocityR=1000;
         this.buffR=true;
         }else if(player==this.playerB){
+        this.orbBad.play();
         this.velocityB=300;
         this.buffB=true;
         
@@ -1172,9 +1221,11 @@ orbeVelocidadBJ(player,orbe) {
         //this.emitterB.stop();
 
         if(player==this.playerB){
+        this.orbFine.play();
         this.jumpB=-1200;
         this.buffB=true;
         }else if(player== this.playerR){
+        this.orbBad.play();
         this.velocityR=300;
         this.buffR=true;
         
@@ -1189,9 +1240,11 @@ orbeVelocidadRJ(player,orbe) {
     //this.emitterR.stop();
 
     if(player==this.playerR){
+    this.orbFine.play();
     this.jumpR=-1200;
     this.buffR=true;
     }else if(player==this.playerB){
+    this.orbBad.play();
     this.velocityB=300;
     this.buffB=true;
     
