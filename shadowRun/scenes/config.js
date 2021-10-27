@@ -1,5 +1,3 @@
-import Menu from "./menu.js";
-
 export default class Config extends Phaser.Scene {
     constructor() {
         super({key: "Config"});
@@ -9,6 +7,7 @@ export default class Config extends Phaser.Scene {
         this.load.image("config", "assets/menu/CONFIG_MENU.png");
         this.load.image("back", "assets/menu/BACK_OPTION.png");
         this.load.image("controles", "assets/menu/CONTROLES.png");
+        this.load.audio("a_back", "assets/menu/Menu_back.mp3");
     }
 
     create(){
@@ -16,12 +15,14 @@ export default class Config extends Phaser.Scene {
         this.back = this.add.image(670, 110, "back").setScale(0.7);
         this.back = this.add.image(530, 440, "controles").setScale(0.67);
         this.cursors = this.input.keyboard.createCursorKeys();
+        this.a_back = this.sound.add("a_back");
     }
 
     update(){
         if(this.cursors.right.isDown){
-            this.scene.launch("Menu",Menu);
-            this.scene.stop("Config", Config);
+            this.a_back.play();
+            this.scene.stop("Config");
+            this.scene.wake("Menu");
         }
     }
 }
