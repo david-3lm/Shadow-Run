@@ -1281,6 +1281,7 @@ gameOver(player){
 catch(){
 
     this.fin=true;
+    this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
     this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8); 
 
 }
