@@ -1,4 +1,9 @@
 import MenuBackground from "./menuBackground.js";
+import Level from "./level.js";
+import Credits from "./credits.js";
+import Code from "./code.js";
+import Tienda from "./tienda.js";
+import Config from "./config.js";
 
 export default class Menu extends Phaser.Scene {
 
@@ -8,6 +13,11 @@ export default class Menu extends Phaser.Scene {
 
 preload()
 {
+    // //carga de imagenes
+    // this.load.image();
+    // //carga de sprites
+    // this.load.spritesheet();
+
     this.scene.launch("MenuBackground",MenuBackground);
     this.scene.sendToBack("MenuBackground");
 
@@ -24,6 +34,7 @@ preload()
     this.load.audio("main_t", "assets/menu/ShadowRun_Maintheme.mp3");
     this.load.audio("select", "assets/menu/Menu_select_alt.mp3");
     
+    console.log("menu");
 }
 
 create()
@@ -316,30 +327,30 @@ update(time, delta)
         this.a_select.play();
 
         if (this.estado == "play"){
-            this.scene.launch("Level");
-            this.scene.stop("Menu");
-            this.scene.stop("MenuBackground");
-               
+            this.scene.launch("Level", Level);
+            this.scene.stop("Menu",Menu);
+            this.scene.stop("MenuBackground",MenuBackground);
+            //this.scene.start("level", Level);   
         }
 
         if(this.estado == "creditos"){
-            this.scene.launch("Credits");
-            this.scene.sleep("Menu");
+            this.scene.launch("Credits", Credits);
+            this.scene.stop("Menu",Menu);
         }
 
         if(this.estado == "code"){
-            this.scene.launch("Code");
-            this.scene.sleep("Menu");
+            this.scene.launch("Code", Code);
+            this.scene.stop("Menu",Menu);
         }
 
         if(this.estado == "tienda"){
-            this.scene.launch("Tienda");
-            this.scene.sleep("Menu");
+            this.scene.launch("Tienda", Tienda);
+            this.scene.stop("Menu",Menu);
         }
 
         if(this.estado == "configuracion"){
-            this.scene.launch("Config");
-            this.scene.sleep("Menu");
+            this.scene.launch("Config", Config);
+            this.scene.stop("Menu",Menu);
         }
     }
     

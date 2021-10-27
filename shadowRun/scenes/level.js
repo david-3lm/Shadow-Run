@@ -1,5 +1,4 @@
 import SceneBackground from "./sceneBackground.js";
-import Menu from "./menu.js";
 
 export default class Level extends Phaser.Scene {
 
@@ -20,10 +19,6 @@ export default class Level extends Phaser.Scene {
 
         this.playerB=null;
         this.playerR=null;
-
-        this.keyA;
-        this.keyW;
-        this.keyD;
         
         
     }
@@ -32,6 +27,8 @@ preload()
 {
     
     //carga de imagenes
+    //this.load.image("dino", "assets/spritesheets/png/Run (3).png");
+    this.load.image("dino", "assets/spritesheets/png/Run (3) pruebas.png");
    // this.load.image("bg", "assets/sprites/Background.png");
     this.load.image("platform", "assets/sprites/platform.png");
     this.load.image("orb","assets/sprites/orb.png");
@@ -62,15 +59,11 @@ preload()
     //Señal muerte
     this.load.image("Death", "assets/sprites/DEATH_SENTENCE.png");
 
-    //Cartel victoria y derrota
-    this.load.image("win", "assets/sprites/VICTORIA.png");
-    this.load.image("lose", "assets/sprites/DERROTA.png");
+    //Señal flecha
+    this.load.image("Arrow", "assets/menu/flechita2.png");
 
     //LASER
     this.load.image("laser", "assets/sprites/Laser.png");
-    
-    //carga audio
-    this.load.audio("techcity", "assets/techCity.mp3");
    
    
 
@@ -79,23 +72,6 @@ preload()
 
 create()
 {
-    //audio para el nivel
-    this.musicLvl = this.sound.add("techcity");
-    
-    //configuracion audio
-    var mConfig = {
-        mute: false,
-        volume: 0.25,
-        rate: 1,
-        detune: 0,
-        seek: 0,
-        loop: true,
-        delay: 0
-    }
-    
-    //activa la musica(audio)
-    this.musicLvl.play(mConfig);
-    
     //limites camara (fuera escena)
     this.cameras.main.setBounds(0, -600*5, 900 * 200, 600 * 10);
     this.physics.world.setBounds(0, -600*5, 900*200, 600*10);
@@ -107,36 +83,36 @@ create()
    
     this.orbGroupB = this.physics.add.staticGroup({
         key: 'orbBlueV',
-        frameQuantity: 1,
+        frameQuantity: 9,
         immovable: true
     });
     this.orbGroupR = this.physics.add.staticGroup({
         key: 'orbRedV',
-        frameQuantity: 1,
+        frameQuantity: 9,
         immovable: true
     });
 
     this.orbGroupB2 = this.physics.add.staticGroup({
         key: 'orbBlueJ',
-        frameQuantity: 1,
+        frameQuantity: 6,
         immovable: true
     });
 
     this.orbGroupR2 = this.physics.add.staticGroup({
         key: 'orbRedJ',
-        frameQuantity: 1,
+        frameQuantity: 6,
         immovable: true
     });
 
-    this.emitterB=this.particles.createEmitter({
-        frame: 'blue',
-        lifespan: 600,
-        speed: { min: 10, max: 200 },
-        gravityY: 300,
-        scale: { start: 0.4, end: 0 },
-        quantity: 0.003,
-        blendMode: 'ADD'
-    });
+    // this.emitterB=this.particles.createEmitter({
+    //     frame: 'blue',
+    //     lifespan: 600,
+    //     speed: { min: 10, max: 200 },
+    //     gravityY: 300,
+    //     scale: { start: 0.4, end: 0 },
+    //     quantity: 0.003,
+    //     blendMode: 'ADD'
+    // });
 
     this.emitterPB=this.particles.createEmitter({
         frame: 'blue',
@@ -149,15 +125,15 @@ create()
     });
 
 
-    this.emitterR=this.particles.createEmitter({
-        frame: 'red',
-        lifespan: 600,
-        speed: { min: 10, max: 200 },
-        gravityY: 300,
-        scale: { start: 0.4, end: 0 },
-        quantity: 0.003,
-        blendMode: 'ADD'
-    });
+    // this.emitterR=this.particles.createEmitter({
+    //     frame: 'red',
+    //     lifespan: 600,
+    //     speed: { min: 10, max: 200 },
+    //     gravityY: 300,
+    //     scale: { start: 0.4, end: 0 },
+    //     quantity: 0.003,
+    //     blendMode: 'ADD'
+    // });
 
     this.emitterPR=this.particles.createEmitter({
         frame: 'red',
@@ -170,20 +146,48 @@ create()
     });
 
     var childrenB = this.orbGroupB.getChildren();
-    childrenB[0].setPosition(500,400).setScale(0.5).refreshBody();
-    this.emitterB.startFollow(childrenB[0]);
+    childrenB[0].setPosition(3600,400).setScale(0.5).refreshBody();
+    childrenB[1].setPosition(10100,272).setScale(0.5).refreshBody();
+    childrenB[2].setPosition(25200,-350).setScale(0.5).refreshBody();
+    childrenB[3].setPosition(32300,400).setScale(0.5).refreshBody();
+    childrenB[4].setPosition(38200,-478).setScale(0.5).refreshBody();
+    childrenB[5].setPosition(40650,400).setScale(0.5).refreshBody();
+    childrenB[6].setPosition(41900,300).setScale(0.5).refreshBody();
+    childrenB[7].setPosition(43900,300).setScale(0.5).refreshBody();
+    childrenB[8].setPosition(45900,300).setScale(0.5).refreshBody();
+    //this.emitterB.startFollow(childrenB[0]);
 
     var childrenR = this.orbGroupR.getChildren();
-    childrenR[0].setPosition(700,400).setScale(0.5).refreshBody();
-    this.emitterR.startFollow(childrenR[0]);
+    childrenR[0].setPosition(3600,530).setScale(0.5).refreshBody();
+    childrenR[1].setPosition(10100,400).setScale(0.5).refreshBody();
+    childrenR[2].setPosition(25200,-220).setScale(0.5).refreshBody();
+    childrenR[3].setPosition(32300,530).setScale(0.5).refreshBody();
+    childrenR[4].setPosition(38200,-348).setScale(0.5).refreshBody();
+    childrenR[5].setPosition(40700,540).setScale(0.5).refreshBody();
+    childrenR[6].setPosition(42900,300).setScale(0.5).refreshBody();
+    childrenR[7].setPosition(44900,300).setScale(0.5).refreshBody();
+    childrenR[8].setPosition(46900,300).setScale(0.5).refreshBody();
+    //this.emitterR.startFollow(childrenR[0]);
+
+    //console.log(childrenR[0]);
 
     var childrenB2 = this.orbGroupB2.getChildren();
-    childrenB2[0].setPosition(200,400).setScale(0.5).refreshBody();
-    this.emitterB.startFollow(childrenB2[0]);
+    childrenB2[0].setPosition(21050,400).setScale(0.5).refreshBody();
+    childrenB2[1].setPosition(29400,250).setScale(0.5).refreshBody();
+    childrenB2[2].setPosition(40700,400).setScale(0.5).refreshBody();
+    childrenB2[3].setPosition(42100,300).setScale(0.5).refreshBody();
+    childrenB2[4].setPosition(44100,300).setScale(0.5).refreshBody();
+    childrenB2[5].setPosition(46100,300).setScale(0.5).refreshBody();
+    //this.emitterB.startFollow(childrenB2[0]);
 
     var childrenR2 = this.orbGroupR2.getChildren();
-    childrenR2[0].setPosition(900,400).setScale(0.5).refreshBody();
-    this.emitterR.startFollow(childrenR2[0]);
+    childrenR2[0].setPosition(21050,540).setScale(0.5).refreshBody();
+    childrenR2[1].setPosition(29400,540).setScale(0.5).refreshBody();
+    childrenR2[2].setPosition(40750,540).setScale(0.5).refreshBody();
+    childrenR2[3].setPosition(43100,300).setScale(0.5).refreshBody();
+    childrenR2[4].setPosition(45100,300).setScale(0.5).refreshBody();
+    childrenR2[5].setPosition(47100,300).setScale(0.5).refreshBody();
+    //this.emitterR.startFollow(childrenR2[0]);
 
     this.orbGroupB.children.iterate((c)=>{
         let tween=  this.tweens.add({
@@ -273,7 +277,7 @@ create()
     this.orbGroupR2.refresh();
 
 
-    this.playerR= this.physics.add.sprite(400,300,"pjR").setScale(0.25);
+    this.playerR= this.physics.add.sprite(200,300,"pjR").setScale(0.25);
     // this.anims.create({
     //     key: 'run',
     //     frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
@@ -284,7 +288,7 @@ create()
 
 
     //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
-    this.playerB= this.physics.add.sprite(200,-300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
+    this.playerB= this.physics.add.sprite(400,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
 
 
     this.anims.create({
@@ -332,7 +336,9 @@ create()
 
     //----------------Plataformas---------------
     this.platforms = this.physics.add.staticGroup();
+    this.platformsM = this.physics.add.staticGroup();
     this.deathsign = this.physics.add.staticGroup();
+    this.arrows = this.physics.add.staticGroup();
 
     //1 
     this.platforms.create(0,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -347,6 +353,9 @@ create()
 
     this.platforms.create(1024,472,'Platform2').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(512,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(1024,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
     //2
     this.platforms.create(2048,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(2304,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -355,11 +364,15 @@ create()
     this.platforms.create(3072,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(3328,600,'Platform1').setOrigin(0,0).refreshBody();
 
-    this.platforms.create(2304,472,'Platform1').setOrigin(0,0).refreshBody();
-    this.platforms.create(2816,472,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(2304,472,'Platform3').setOrigin(0,0).refreshBody();
+    this.platforms.create(2816,472,'Platform3').setOrigin(0,0).refreshBody();
 
     this.platforms.create(2304,-40,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(2816,-40,'Platform1').setOrigin(0,0).refreshBody();
+
+    this.arrows.create(2816,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(2304,-40,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(2816,-40,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
 
     //3
     //this.platforms.create(3584,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -381,6 +394,10 @@ create()
     this.platforms.create(5248,-40,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(5248,-552,'Platform1').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(4864,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(5248,-40,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(5376,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
     //4
     this.platforms.create(5632,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(6912,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -396,10 +413,13 @@ create()
     this.platforms.create(6528,472,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(7040,344,'Platform3').setOrigin(0,0).refreshBody();
 
-    this.platforms.create(5888,-40,'PlatformM').setOrigin(0,0).refreshBody();
-    this.platforms.create(6528,-40,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(5738,-40,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(6378,-40,'PlatformM').setOrigin(0,0).refreshBody();
     this.platforms.create(7168,-40,'Platform2').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(6912,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(7424,344,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    
     //5
     this.platforms.create(8064,344,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(8320,344,'Platform1').setOrigin(0,0).refreshBody();
@@ -418,6 +438,9 @@ create()
 
     this.platforms.create(8064,-40,'Platform2').setOrigin(0,0).refreshBody();
     this.platforms.create(9600,472,'Platform2').setOrigin(0,0).refreshBody();
+
+    this.arrows.create(8832,344,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(10112,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
 
     //6
     this.platforms.create(10624,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -442,6 +465,8 @@ create()
     this.platforms.create(11648,472,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(11392,216,'Platform3').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(11136,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
     //7
     this.platforms.create(10240,-40,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(9856,-168,'Platform3').setOrigin(0,0).refreshBody();
@@ -462,6 +487,9 @@ create()
     this.platforms.create(11392,-552,'Platform2').setOrigin(0,0).refreshBody();
     this.platforms.create(11904,-552,'Platform2').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(11648,-936,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
+
     //8
     this.platforms.create(12416,88,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(12672,88,'Platform1').setOrigin(0,0).refreshBody();
@@ -479,8 +507,8 @@ create()
     this.platforms.create(12928,-40,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(13696,472,'Platform3').setOrigin(0,0).refreshBody();
 
-    this.platforms.create(12800,-552,'PlatformM').setOrigin(0,0).refreshBody();
-    this.platforms.create(13312,-552,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(12650,-552,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(13162,-552,'PlatformM').setOrigin(0,0).refreshBody();
 
     this.platforms.create(13952,-424,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(13952,-168,'Platform1').setOrigin(0,0).refreshBody();
@@ -515,6 +543,12 @@ create()
 
     this.deathsign.create(15936,656,'Death');
 
+    this.arrows.create(13184,-168,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(12928,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(14976,88,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(13696,856,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
+
     //9
     this.platforms.create(16128,856,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(16384,856,'Platform1').setOrigin(0,0).refreshBody();
@@ -539,13 +573,18 @@ create()
 
     this.deathsign.create(18840,400,'Death');
 
-    this.platforms.create(18944,600,'PlatformM').setOrigin(0,0).refreshBody();
-    this.platforms.create(19456,600,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(18950,600,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(19400,600,'PlatformM').setOrigin(0,0).refreshBody();
 
     this.platforms.create(20096,856,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(20096,600,'Platform1').setOrigin(0,0).refreshBody();
 
     this.deathsign.create(20550,456,'Death');
+
+    this.arrows.create(16384,856,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(17152,856,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(18432,856,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
 
     //10
     this.platforms.create(20736,856,'Platform1').setOrigin(0,0).refreshBody();
@@ -600,6 +639,10 @@ create()
     this.platforms.create(23552,88,'Platform2').setOrigin(0,0).refreshBody();
     this.platforms.create(24192,-168,'Platform2').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(21248,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(23000,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(23552,-296,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
     //11
     this.platforms.create(24704,-168,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(24960,-168,'Platform1').setOrigin(0,0).refreshBody();
@@ -636,6 +679,12 @@ create()
     this.platforms.create(28544,472,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(28800,600,'Platform1').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(25216,-168,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(26368,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(28032,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
+
+
     //12
     this.platforms.create(29056,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(29312,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -665,6 +714,12 @@ create()
     this.platforms.create(31360,728,'Platform2').setOrigin(0,0).refreshBody();
     this.platforms.create(31488,344,'Platform1').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(29568,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(29952,344,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(30720,344,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(31488,344,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
+
     //13
     this.platforms.create(32128,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(32384,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -688,6 +743,10 @@ create()
     this.platforms.create(35840,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(36096,600,'Platform1').setOrigin(0,0).refreshBody();
 
+    this.arrows.create(33536,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(35840,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
+
     //14
     this.platforms.create(36352,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(36608,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -707,9 +766,9 @@ create()
     this.platforms.create(37504,344,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(37248,216,'Platform1').setOrigin(0,0).refreshBody();
 
-    this.platforms.create(36864,88,'PlatformM').setOrigin(0,0).refreshBody();
-    this.platforms.create(36864,-296,'PlatformM').setOrigin(0,0).refreshBody();
-    this.platforms.create(37376,-296,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(36714,88,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(36714,-296,'PlatformM').setOrigin(0,0).refreshBody();
+    this.platformsM.create(37226,-296,'PlatformM').setOrigin(0,0).refreshBody();
 
     this.platforms.create(36352,88,'Platform3').setOrigin(0,0).refreshBody();
     this.platforms.create(36096,-40,'Platform1').setOrigin(0,0).refreshBody();
@@ -723,7 +782,10 @@ create()
     this.platforms.create(36352,-296,'Platform3').setOrigin(0,0).refreshBody();
 
     this.platforms.create(37888,-296,'Platform2').setOrigin(0,0).refreshBody();
+
+    this.arrows.create(36608,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
     
+       
     //15
     this.platforms.create(38400,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(38400,344,'Platform1').setOrigin(0,0).refreshBody();
@@ -750,6 +812,10 @@ create()
     this.platforms.create(39680,472,'Platform3').setOrigin(0,0).refreshBody();
 
     this.platforms.create(39936,600,'Platform1').setOrigin(0,0).refreshBody();
+
+    this.arrows.create(38400,-168,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(38912,88,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
 
     //16
     this.platforms.create(39936,600,'Platform1').setOrigin(0,0).refreshBody();
@@ -782,27 +848,59 @@ create()
     this.platforms.create(46848,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(47104,600,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(47360,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(47616,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(47872,600,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(48128,600,'Platform1').setOrigin(0,0).refreshBody();
 
-    this.platforms.create(47360,344,'Platform1').setOrigin(0,0).refreshBody();
-    this.platforms.create(47104,472,'Platform3').setOrigin(0,0).refreshBody();
+    this.platforms.create(48128,344,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(47872,472,'Platform3').setOrigin(0,0).refreshBody();
+
+    this.arrows.create(40192,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(41728,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(43008,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(44544,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(45312,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(46592,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(47360,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+    this.arrows.create(48128,600,'Arrow').setScale(0.5).setOrigin(0,0).refreshBody();
+
 
     //17
-    this.platforms.create(47616,344,'Platform1').setOrigin(0,0).refreshBody();
-    this.platforms.create(47872,344,'Platform1').setOrigin(0,0).refreshBody();
-    this.platforms.create(48128,344,'Platform1').setOrigin(0,0).refreshBody();
-    //this.platforms.create(48128,88,'Platform1').setOrigin(0,0).refreshBody();
-    this.platforms.create(47360,-168,'Platform1').setOrigin(0,0).refreshBody();
-    this.platforms.create(47616,-168,'Platform1').setOrigin(0,0).refreshBody();
-    this.platforms.create(47872,-168,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(48384,344,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(48640,344,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(48896,344,'Platform1').setOrigin(0,0).refreshBody();
     this.platforms.create(48128,-168,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(48384,-168,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(48640,-168,'Platform1').setOrigin(0,0).refreshBody();
+    this.platforms.create(48896,-168,'Platform1').setOrigin(0,0).refreshBody();
 
 
 
     // //colisiones con obstaculos y mundo
     this.physics.add.collider(this.playerB, this.platforms);
     this.physics.add.collider(this.playerR, this.platforms);
+    this.physics.add.collider(this.playerB, this.platformsM);
+    this.physics.add.collider(this.playerR, this.platformsM);
     this.playerB.setCollideWorldBounds(true);
-    this.playerR.setCollideWorldBounds(true);
+
+    //Movimiento de las plataformas móviles
+    this.platformsM.children.iterate((c)=>{
+        let tween=  this.tweens.add({
+        targets: c,
+        props: {
+            x:{
+                duration:750,
+                value: c.x+150
+             },
+                         
+        },
+        repeat: -1,
+        yoyo: true,
+        ease: function (t) {
+            return Math.pow(Math.sin(t * 500/360), 2);
+        }
+        })
+    });
 
 
     //--------------Fin plataformas-------------//
@@ -843,33 +941,22 @@ create()
     //objeto cursor para uso teclado;
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    this.keyA= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-    this.keyW= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-    this.keyD= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    var keys = this.input.keyboard.addKeys('W,S,A,D');
 }
 
 update(time, delta)
 {
+    
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
     if(this.buffB!=true){
-        this.timerB=time;
-    }else if(time-this.timerB>3000){
+        this.timer=time;
+    }else if(time-this.timer>3000){
         this.buffB=false;
         this.velocityB=600;
         this.jumpB=-800;
-        this.emitterPB.stop();
         this.emitterPR.stop();
-    }
-    if(this.buffR!=true){
-        this.timerR=time;
-    }else if(time-this.timerR>3000){
-        this.buffR=false;
-        this.velocityR=600;
-        this.jumpR=-800;
         this.emitterPB.stop();
-        this.emitterPR.stop();
-
     }
 
     this.laser.y=this.playerB.y;
@@ -877,6 +964,10 @@ update(time, delta)
     if(this.laser.x>25000)this.laser.x+=delta/2.25;
 
 
+    //Actualización del hitbox de las plataformas móviles
+    this.platformsM.children.iterate((c)=>{
+        c.refreshBody();
+    });
 
   
     //Controles del que huye
@@ -922,46 +1013,45 @@ update(time, delta)
     // this.playerR.body.followTarget(this.playerB);
 
 
-    //Controles del que persigue
+    // //Controles del que persigue
 
 
-    if (this.keyA.isDown)
-        {   
+    // if (this.keys.W)
+    //     {   
 
-        if(!this.runningR&&this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
+    //     if(!this.running&&this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
             
-        this.playerR.setVelocityX(-this.velocityR);
-        this.playerR.flipX = false;
-        //this.cameras.main.followOffset.x = -100;
+    //     this.playerB.setVelocityX(-this.velocityB);
+    //     this.playerB.flipX = false;
+    //     this.cameras.main.followOffset.x = -100;
         
-    }
-    else if (this.keyD.isDown)
-        {
-        if(this.runningR!=true)if(this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
+    // }
+    // else if (this.cursors.right.isDown)
+    //     {
+    //     if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
 
-        this.playerR.setVelocityX(this.velocityR);
-        this.playerR.flipX = true;
-        //this.cameras.main.followOffset.x = -200; 
-        }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
-        this.runningR=false;
-        }
+    //     this.playerB.setVelocityX(this.velocityB);
+    //     this.playerB.flipX = true;
+    //     this.cameras.main.followOffset.x = -200;
+    //     }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
+    //     this.running=false;
+    //     }
 
-    if (this.keyW.isDown && this.playerR.body.touching.down) 
-    {
-        this.playerR.setVelocityY(this.jumpR);
+    // if (this.cursors.up.isDown && this.playerB.body.touching.down) 
+    // {
+    //     this.playerB.setVelocityY(this.jumpB);
 
     
-    }else if (this.playerR.body.touching.down&& !this.runningR)
-        {
-        this.runningR=false;
-        this.playerR.anims.play("idleR");
-        }
+    // }else if (this.playerB.body.touching.down&& !this.running)
+    //     {
+    //     this.running=false;
+    //     this.playerB.anims.play("idle");
+    //     }
 
-    if(this.playerR.body.touching.down==false){
-        this.playerR.anims.play('jumpR');
-        this.runningR=false;
-    }
-
+    // if(this.playerB.body.touching.down==false){
+    //     this.playerB.anims.play('jump');
+    //     this.running=false;
+    // }
    
 }
 
@@ -971,7 +1061,7 @@ orbeVelocidadBV(player,orbe) {
         this.emitterPB.startFollow(player);
         this.orbGroupB.killAndHide(orbe);
         orbe.body.enable = false;
-        this.emitterB.stop();
+        //this.emitterB.stop();
 
         if(player==this.playerB){
         this.velocityB=1000;
@@ -989,7 +1079,7 @@ orbeVelocidadRV(player,orbe) {
         this.emitterPR.startFollow(player);
         this.orbGroupR.killAndHide(orbe);
         orbe.body.enable = false;
-        this.emitterR.stop();
+        //this.emitterR.stop();
 
         if(player==this.playerR){
         this.velocityR=1000;
@@ -1006,7 +1096,7 @@ orbeVelocidadBJ(player,orbe) {
         this.emitterPB.startFollow(player);
         this.orbGroupB2.killAndHide(orbe);
         orbe.body.enable = false;
-        this.emitterB.stop();
+        //this.emitterB.stop();
 
         if(player==this.playerB){
         this.jumpB=-1200;
@@ -1023,10 +1113,10 @@ orbeVelocidadRJ(player,orbe) {
     this.emitterPR.startFollow(player);
     this.orbGroupR2.killAndHide(orbe);
     orbe.body.enable = false;
-    this.emitterR.stop();
+    //this.emitterR.stop();
 
     if(player==this.playerR){
-    this.jumpR=-1200;
+    this.jumpR=1000;
     this.buffR=true;
     }else if(player==this.playerB){
     this.velocityB=300;
@@ -1035,23 +1125,12 @@ orbeVelocidadRJ(player,orbe) {
 }
 }
 
-gameOver(player){
-    if(player==this.playerR){
-        this.add.image(0,0,"win");
-        }else if(player==this.playerB){
-        this.add.image(0,0,"lose");
-        
-    }
-
-    this.scene.launch("Menu", Menu);
-    this.scene.stop("Level",Level);
+gameOver(){
+     console.log("end");
 }
 
 catch(){
-
-    this.add.image(0,0,"lose");
-    this.scene.launch("Menu", Menu);
-    this.scene.stop("Level",Level);
+    console.log("pillado")
 }
 
 

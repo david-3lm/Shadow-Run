@@ -155,8 +155,6 @@ export default class SceneBackground extends Phaser.Scene {
 
         //cursor
         this.cursor = this.input.keyboard.createCursorKeys();
-
-        console.log(this.fogfront1);
        
     }
     update(time, delta) {
