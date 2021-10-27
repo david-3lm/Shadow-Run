@@ -1,5 +1,3 @@
-import Menu from "./menu.js";
-
 export default class Tienda extends Phaser.Scene {
     constructor() {
         super({key: "Tienda"});
@@ -22,8 +20,8 @@ export default class Tienda extends Phaser.Scene {
     update(){
         if(this.cursors.up.isDown){
             this.a_back.play();
-            this.scene.launch("Menu",Menu);
-            this.scene.stop("Tienda", Tienda);
+            this.scene.stop("Tienda");
+            this.scene.wake("Menu");
         }
     }
 }
