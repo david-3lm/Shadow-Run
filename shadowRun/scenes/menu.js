@@ -1,5 +1,9 @@
-import SceneBackground from "./sceneBackground.js";
 import MenuBackground from "./menuBackground.js";
+import Level from "./level.js";
+import Credits from "./credits.js";
+import Code from "./code.js";
+import Tienda from "./tienda.js";
+import Config from "./config.js";
 
 export default class Menu extends Phaser.Scene {
 
@@ -14,7 +18,7 @@ preload()
     // //carga de sprites
     // this.load.spritesheet();
 
-    this.scene.launch("MenuBackground",SceneBackground);
+    this.scene.launch("MenuBackground",MenuBackground);
     this.scene.sendToBack("MenuBackground");
 
     this.load.image("interface", "assets/menu/MENU_NEON.png");
@@ -24,6 +28,12 @@ preload()
     this.load.image("hover_br", "assets/menu/CUADRADO_SELEC_CONFIG.png");
     this.load.image("hover_b", "assets/menu/CUADRADO_SELEC_TIENDA.png");
 
+    this.load.audio("nav_der", "assets/menu/Menu_nav_der.mp3");
+    this.load.audio("nav_izq", "assets/menu/Menu_nav_izq.mp3");
+    this.load.audio("nav_center", "assets/menu/Menu_nav_center.mp3");
+    this.load.audio("main_t", "assets/menu/ShadowRun_Maintheme.mp3");
+    this.load.audio("select", "assets/menu/Menu_select_alt.mp3");
+    
     console.log("menu");
 }
 
@@ -45,13 +55,25 @@ create()
     this.interface= this.add.image(-5,0,"interface").setScale(0.9).setOrigin(0,-0.05);
     this.interface.depth = 0.1;
 
+    this.music = this.sound.add("main_t");
+    var mConfig = {
+        mute: false,
+        volume: 0.25,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0
+    }
+    this.music.play(mConfig);
+
     //hover con sus posiciones iniciales(fuera de la pantalla) y finales(donde encajan)
 
     //code
     this.hover_r=this.add.image(950,280,"hover_r");
     this.hover_r.startx = 950;
     this.hover_r.endx = 590;
-
+    
     //play
     this.hover_l=this.add.image(218,285,"hover_l");
     this.hover_l.startx = 218;
@@ -76,6 +98,16 @@ create()
     this.cursors = this.input.keyboard.createCursorKeys();
 
     console.log(this.hover_b.y)
+
+    //audio
+
+    this.a_navder = this.sound.add("nav_der");
+    this.a_navizq = this.sound.add("nav_izq");
+    this.a_navcenter = this.sound.add("nav_center");
+    this.a_select = this.sound.add("select");
+
+    //estado 
+    this.estado = "play";
 }
 
 update(time, delta)
@@ -85,42 +117,64 @@ update(time, delta)
 
     if (this.cursors.right.isDown){
 
+        //TIENDA
         //si se encontraba en credits
         if(this.hover_bl.y == this.hover_bl.endy){
 
-        this.tweens.add({
-            targets: this.hover_b,
-            duration:100,
-            y: this.hover_b.endy,
-        });
-        
-        this.hover_bl.y = this.hover_bl.starty;
-        console.log(this.hover_b.y)
-        //console.log(this.hover_b.endy)
+            //audio
+            this.a_navcenter.play();
+
+            //animacion
+            this.tweens.add({
+                targets: this.hover_b,
+                duration:100,
+                y: this.hover_b.endy,
+            });
+            
+            this.hover_bl.y = this.hover_bl.starty;
+
+            //Estado
+            this.estado = "tienda";
         }
 
+        //CONFIGURACION
         //si se encontraba en tienda
         if(this.hover_b.y == this.hover_b.endy){
 
-        this.tweens.add({
-            targets: this.hover_br,
-            duration:100,
-            y: this.hover_br.endy,
-        });
-        this.hover_b.y = this.hover_b.starty;
+            //audio    
+            this.a_navder.play();
+
+            //animacion
+            this.tweens.add({
+                targets: this.hover_br,
+                duration:100,
+                y: this.hover_br.endy,
+            });
+            this.hover_b.y = this.hover_b.starty;
+
+            //Estado
+            this.estado = "configuracion";
+
         }
 
+        //CODE
         //si se encontraba en play
         if(this.hover_l.x == this.hover_l.startx){
-            console.log(this.hover_l.x)
-            console.log(this.hover_l.startx)
 
+            //sonido
+            this.a_navder.play();
+            console.log(this.a_navder.key)
+
+            //animacion
             this.tweens.add({
                 targets: this.hover_r,
                 duration:100,
                 x:this.hover_r.endx,
             });
             this.hover_l.x = this.hover_l.endx;
+
+            //Estado
+            this.estado = "code";
         }
         
     }    
@@ -130,96 +184,174 @@ update(time, delta)
 
     if (this.cursors.left.isDown){
 
+        //TIENDA
         //si se encontraba en configuracion
         if(this.hover_br.y == this.hover_br.endy){
 
+            //audio
+            this.a_navcenter.play();
+
+            //animacion
             this.tweens.add({
                 targets: this.hover_b,
                 duration:100,
                 y: this.hover_b.endy,
             });
             this.hover_br.y = this.hover_br.starty;
-            }
+
+            //Estado
+            this.estado = "tienda";
+        }
     
+        //CREDITOS
         //si se encontraba en tienda    
         if(this.hover_b.y == this.hover_b.endy){
     
+            //audio
+            this.a_navizq.play();
+
+            //animacion
             this.tweens.add({
                 targets: this.hover_bl,
                 duration:100,
                 y: this.hover_bl.endy,
             });
             this.hover_b.y = this.hover_b.starty;
+
+            //Estado
+            this.estado = "creditos";
         }
 
+        //PLAY
         //si se encontraba en code
         if(this.hover_r.x != this.hover_r.startx){
+
+            //audio
+            this.a_navizq.play();
+            console.log(this.a_navizq.key)
+
+            //animacion
             this.tweens.add({
                 targets: this.hover_l,
                 duration:100,
                 x:this.hover_l.startx,
             });
             this.hover_r.x = this.hover_r.startx;
+
+            //Estado
+            this.estado = "play";
         }
     }
 
     //TECLA ABAJO
 
+    //CREDITOS
     ////si se encontraba en play
-    if (this.cursors.down.isDown & this.hover_l.x == this.hover_l.startx){
+    if (this.cursors.down.isDown && this.hover_l.x == this.hover_l.startx){
 
-        
+        this.a_navder.play();
+
         this.tweens.add({
             targets: this.hover_bl,
             duration:100,
             y: this.hover_bl.endy,
-    });
+        });
     
-    this.hover_l.x = this.hover_l.endx;
+        this.hover_l.x = this.hover_l.endx;
+
+        //Estado
+        this.estado = "creditos";
     
     }
 
+    //CONFIGURACION
     ////si se encontraba en code
-    if (this.cursors.down.isDown & this.hover_r.x == this.hover_r.endx){
+    if (this.cursors.down.isDown && this.hover_r.x == this.hover_r.endx){
 
+        this.a_navizq.play();
         
         this.tweens.add({
             targets: this.hover_br,
             duration:100,
             y: this.hover_br.endy,
-    });
+        });
     
-    this.hover_r.x = this.hover_r.startx;
+        this.hover_r.x = this.hover_r.startx;
+
+        //Estado
+        this.estado = "configuracion";
     
     }
 
     //TECLA ARRIBA
 
+    //CODE
     //si se encontraba en configuracion
-    if (this.cursors.up.isDown & this.hover_br.y == this.hover_br.endy){
+    if (this.cursors.up.isDown && this.hover_br.y == this.hover_br.endy){
+
+        this.a_navizq.play();
 
         this.tweens.add({
             targets: this.hover_r,
             duration:100,
             x: this.hover_r.endx,
-    });
+        });
     
-    this.hover_br.y = this.hover_br.starty;
+        this.hover_br.y = this.hover_br.starty;
+
+        //Estado
+        this.estado = "code";
     
     }
 
+    //PLAY
     //si se encontraba en creditos
-    if (this.cursors.up.isDown & this.hover_bl.y == this.hover_bl.endy){
+    if (this.cursors.up.isDown && this.hover_bl.y == this.hover_bl.endy){
 
+        this.a_navder.play();
         
         this.tweens.add({
             targets: this.hover_l,
             duration:100,
             x: this.hover_l.startx,
-    });
+        });
     
     this.hover_bl.y = this.hover_bl.starty;
+
+        //Estado
+        this.estado = "code";
     
+    }
+
+    if(this.cursors.space.isDown){
+        this.a_select.play();
+
+        if (this.estado == "play"){
+            this.scene.launch("Level", Level);
+            this.scene.stop("Menu",Menu);
+            this.scene.stop("MenuBackground",MenuBackground);
+            //this.scene.start("level", Level);   
+        }
+
+        if(this.estado == "creditos"){
+            this.scene.launch("Credits", Credits);
+            this.scene.stop("Menu",Menu);
+        }
+
+        if(this.estado == "code"){
+            this.scene.launch("Code", Code);
+            this.scene.stop("Menu",Menu);
+        }
+
+        if(this.estado == "tienda"){
+            this.scene.launch("Tienda", Tienda);
+            this.scene.stop("Menu",Menu);
+        }
+
+        if(this.estado == "configuracion"){
+            this.scene.launch("Config", Config);
+            this.scene.stop("Menu",Menu);
+        }
     }
     
  }
