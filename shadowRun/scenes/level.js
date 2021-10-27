@@ -1,4 +1,5 @@
 import SceneBackground from "./sceneBackground.js";
+import Menu from "./menu.js";
 
 export default class Level extends Phaser.Scene {
 
@@ -19,6 +20,10 @@ export default class Level extends Phaser.Scene {
 
         this.playerB=null;
         this.playerR=null;
+
+        this.keyA;
+        this.keyW;
+        this.keyD;
         
         
     }
@@ -27,8 +32,6 @@ preload()
 {
     
     //carga de imagenes
-    //this.load.image("dino", "assets/spritesheets/png/Run (3).png");
-    this.load.image("dino", "assets/spritesheets/png/Run (3) pruebas.png");
    // this.load.image("bg", "assets/sprites/Background.png");
     this.load.image("platform", "assets/sprites/platform.png");
     this.load.image("orb","assets/sprites/orb.png");
@@ -58,6 +61,10 @@ preload()
 
     //Señal muerte
     this.load.image("Death", "assets/sprites/DEATH_SENTENCE.png");
+
+    //Cartel victoria y derrota
+    this.load.image("win", "assets/sprites/VICTORIA.png");
+    this.load.image("lose", "assets/sprites/DERROTA.png");
 
     //LASER
     this.load.image("laser", "assets/sprites/Laser.png");
@@ -775,6 +782,7 @@ create()
     this.physics.add.collider(this.playerB, this.platforms);
     this.physics.add.collider(this.playerR, this.platforms);
     this.playerB.setCollideWorldBounds(true);
+    this.playerR.setCollideWorldBounds(true);
 
 
     //--------------Fin plataformas-------------//
@@ -815,7 +823,9 @@ create()
     //objeto cursor para uso teclado;
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    var keys = this.input.keyboard.addKeys('W,S,A,D');
+    this.keyA= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.keyW= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.keyD= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
 }
 
 update(time, delta)
@@ -823,13 +833,23 @@ update(time, delta)
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
     if(this.buffB!=true){
-        this.timer=time;
-    }else if(time-this.timer>3000){
+        this.timerB=time;
+    }else if(time-this.timerB>3000){
         this.buffB=false;
         this.velocityB=600;
         this.jumpB=-800;
-        this.emitterPR.stop();
         this.emitterPB.stop();
+        this.emitterPR.stop();
+    }
+    if(this.buffR!=true){
+        this.timerR=time;
+    }else if(time-this.timerR>3000){
+        this.buffR=false;
+        this.velocityR=600;
+        this.jumpR=-800;
+        this.emitterPB.stop();
+        this.emitterPR.stop();
+
     }
 
     this.laser.y=this.playerB.y;
@@ -882,45 +902,46 @@ update(time, delta)
     // this.playerR.body.followTarget(this.playerB);
 
 
-    // //Controles del que persigue
+    //Controles del que persigue
 
 
-    // if (this.keys.W)
-    //     {   
+    if (this.keyA.isDown)
+        {   
 
-    //     if(!this.running&&this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
+        if(!this.runningR&&this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
             
-    //     this.playerB.setVelocityX(-this.velocityB);
-    //     this.playerB.flipX = false;
-    //     this.cameras.main.followOffset.x = -100;
+        this.playerR.setVelocityX(-this.velocityR);
+        this.playerR.flipX = false;
+        //this.cameras.main.followOffset.x = -100;
         
-    // }
-    // else if (this.cursors.right.isDown)
-    //     {
-    //     if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
+    }
+    else if (this.keyD.isDown)
+        {
+        if(this.runningR!=true)if(this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
 
-    //     this.playerB.setVelocityX(this.velocityB);
-    //     this.playerB.flipX = true;
-    //     this.cameras.main.followOffset.x = -200;
-    //     }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
-    //     this.running=false;
-    //     }
+        this.playerR.setVelocityX(this.velocityR);
+        this.playerR.flipX = true;
+        //this.cameras.main.followOffset.x = -200; 
+        }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
+        this.runningR=false;
+        }
 
-    // if (this.cursors.up.isDown && this.playerB.body.touching.down) 
-    // {
-    //     this.playerB.setVelocityY(this.jumpB);
+    if (this.keyW.isDown && this.playerR.body.touching.down) 
+    {
+        this.playerR.setVelocityY(this.jumpR);
 
     
-    // }else if (this.playerB.body.touching.down&& !this.running)
-    //     {
-    //     this.running=false;
-    //     this.playerB.anims.play("idle");
-    //     }
+    }else if (this.playerR.body.touching.down&& !this.runningR)
+        {
+        this.runningR=false;
+        this.playerR.anims.play("idleR");
+        }
 
-    // if(this.playerB.body.touching.down==false){
-    //     this.playerB.anims.play('jump');
-    //     this.running=false;
-    // }
+    if(this.playerR.body.touching.down==false){
+        this.playerR.anims.play('jumpR');
+        this.runningR=false;
+    }
+
    
 }
 
@@ -985,7 +1006,7 @@ orbeVelocidadRJ(player,orbe) {
     this.emitterR.stop();
 
     if(player==this.playerR){
-    this.jumpR=1000;
+    this.jumpR=-1200;
     this.buffR=true;
     }else if(player==this.playerB){
     this.velocityB=300;
@@ -994,12 +1015,23 @@ orbeVelocidadRJ(player,orbe) {
 }
 }
 
-gameOver(){
-     console.log("end");
+gameOver(player){
+    if(player==this.playerR){
+        this.add.image(0,0,"win");
+        }else if(player==this.playerB){
+        this.add.image(0,0,"lose");
+        
+    }
+
+    this.scene.launch("Menu", Menu);
+    this.scene.stop("Level",Level);
 }
 
 catch(){
-    console.log("pillado")
+
+    this.add.image(0,0,"lose");
+    this.scene.launch("Menu", Menu);
+    this.scene.stop("Level",Level);
 }
 
 
