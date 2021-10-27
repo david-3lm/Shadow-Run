@@ -1,5 +1,3 @@
-import Menu from "./menu.js";
-
 export default class Credits extends Phaser.Scene {
     constructor() {
         super({key: "Credits"});
@@ -23,8 +21,8 @@ export default class Credits extends Phaser.Scene {
     update(){
         if(this.cursors.left.isDown){
             this.a_back.play();
-            this.scene.launch("Menu",Menu);
-            this.scene.stop("Credits", Credits);
+            this.scene.stop("Credits");
+            this.scene.wake("Menu");
         }
     }
 }
