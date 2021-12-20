@@ -4,6 +4,7 @@ import SceneBackground from "./scenes/sceneBackground.js";
 import MenuBackground from "./scenes/menuBackground.js";
 import Credits from "./scenes/credits.js";
 import Code from "./scenes/code.js"
+import CodeLevel from "./scenes/codeLevel.js"
 import Tienda from "./scenes/tienda.js"
 import Config from "./scenes/config.js"
 
@@ -21,7 +22,7 @@ var config = {
             debug: false
         }
     },
-    scene: [Menu, Level, SceneBackground, MenuBackground, Credits, Code, Config, Tienda]
+    scene: [Menu, Level, CodeLevel, SceneBackground, MenuBackground, Credits, Code, Config, Tienda]
 };
 
 var game = new Phaser.Game(config);
