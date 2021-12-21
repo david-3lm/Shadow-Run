@@ -1,7 +1,9 @@
 import SceneBackground from "./sceneBackground.js";
 import Menu from "./menu.js";
 
-var connection;
+var connection = null;
+var teclaDBWS = false;
+var teclaUp = false;
 
 export default class CodeLevel extends Phaser.Scene {
 
@@ -1035,19 +1037,21 @@ update(time, delta)
 
     }
 
+	//SILENCIADO POR WS
+	/*
     this.laser.y=this.playerB.y;
     this.laser.x+=delta/3;
     if(this.laser.x>25000)this.laser.x+=delta/2.25;
-
+	*/
 
     if(this.playerB.y>950){
-        this.gameOver(this.playerB);
+        //this.gameOver(this.playerB);
     }
     if(this.playerR.y>950){
-        this.gameOver(this.playerR);
+        //this.gameOver(this.playerR);
     }
     if(this.playerB.x>48500){
-        this.victory();
+        //this.victory();
     }
 
 
@@ -1073,12 +1077,14 @@ update(time, delta)
     else if (this.cursors.right.isDown)
         {
         if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
-
+		
+		//console.log(this.playerB.anims.play('run'));
+		
         this.playerB.setVelocityX(this.velocityB);
         this.playerB.flipX = true;
         this.cameras.main.followOffset.x = -200;
         
-        this.wsPlayerPosition(this.playerB.x, this.playerB.y);
+        this.wsPlayerPosition("run");
         
         }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
         this.running=false;
@@ -1095,6 +1101,8 @@ update(time, delta)
         {
         this.running=false;
         this.playerB.anims.play("idle");
+        
+        this.wsPlayerPosition("idle");
         }
 
     if(this.playerB.body.touching.down==false){
@@ -1181,6 +1189,24 @@ update(time, delta)
         });
         }
 }
+   
+   if(teclaDBWS==true){
+	console.log("if1");
+	this.playerB.anims.play('run'); 
+
+	//this.running=true;
+
+    this.playerB.setVelocityX(this.velocityB);
+    this.playerB.flipX = true;
+    this.cameras.main.followOffset.x = -200;
+}
+
+	if (teclaUp==true){
+		//this.running=false;
+		this.playerB.anims.play("idle");
+		//this.playerB.setVelocityX(0);
+	}
+   
    
 }
 
@@ -1301,33 +1327,52 @@ victory(){
     this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
 }
 
-wsPlayerPosition(playerX, playerY){
-	 var mssg = { posX : playerX, posY : playerY };
+wsPlayerPosition(animkey){
+	 var mssg = { key : animkey };
 			    var mssgJson = JSON.stringify(mssg);
 			    connection.send(mssgJson);
 }
 
-wsPlayerAPosition(posX,posY){
-	this.playerR.x = posX;
-	this.playerR.y = posY;
-}
-
 
 wsConnection(){
+	//var self = this;
+	if(connection==null){
+		connection = new WebSocket('ws://10.97.1.22:8080/game');
+	}
 	
-		  
-	connection = new WebSocket('ws://10.97.4.24:8080/game');
 		connection.onerror = function(e) {
 		  console.log("WS error: " + e);
 		}
 		
-		connection.onmessage = function(msg) {
+		connection.onmessage = function(msg){
+			//console.log(this);
 		  console.log("WS message: " + msg.data);
-		  var parseMsgX = JSON.parse(msg.data).posX;
-		  var parseMsgY = JSON.parse(msg.data).posY;
-		  console.log(parseMsgX);
-		  console.log(parseMsgY);
-		 wsPlayerAPosition(parseMsgX,parseMsgY);
+		  //var parseMsgX = JSON.parse(msg.data).posX;
+		  //var parseMsgY = JSON.parse(msg.data).posY;
+		  //console.log(parseMsgX);
+		  //console.log(parseMsgY);
+		 var parseKey = JSON.parse(msg.data).key;
+		 //console.log(JSON.parse(msg.data).key);
+		 
+		 switch(parseKey){
+			
+			case "run":
+			teclaDBWS = true;
+			teclaUp = false;
+			console.log("switch");
+			//self.teclaDBWS();
+			break;
+			
+			case "idle":
+			console.log("F");
+
+			teclaUp = true;
+			//teclaDBWS = false;
+			//self.teclaIsUp();
+			break;
+		}
+		 //self.wsPlayerBPosition(parseKey);
+		 //self.wsPlayerAPosition(5,5);
 		  //$('#chat').append(msg.data)
 		}
 		connection.onclose = function() {
