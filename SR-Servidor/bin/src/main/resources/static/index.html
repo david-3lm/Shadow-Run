@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Shadow-Run</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.51.0/dist/phaser.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js></script>
+    <script src="main.js" type= "module"></script>
+    <script src="request.js" type= "module"></script>
+
+</head>
+<body>
+
+<div id='id1' style='display: inline-block; width:850px'></div>
+<div id='chat' style='display: inline-block'>
+	<label for="username">Username</label>
+	<input type="text" id="input-username" placeholder="Your username here!">
+	<button id="addName">I like this name!</button>
+	<p>CHAT:</p>
+		<div style='border: 2px solid #000000; padding:10px; height:450px; width:400px'>
+		<!--Defaul
+		<p>Miyazaki: OOOOOOOOOOOOOOOOOOOOOOOH jejejejejejejejjejejejejeje
+		<p>A random hollow: ELDEN RING-->
+        <ul id="users"></ul>    
+		</div>
+	<p>
+	<label for="message">Message</label>
+	<input type="text" id="input-message" placeholder="Write here">
+	<button id = "addMessage">Let's Chat!!</button>
+	<p>
+	<button id=get>Click for cry</button>		
+	
+</div>
+</body>
+</html>
