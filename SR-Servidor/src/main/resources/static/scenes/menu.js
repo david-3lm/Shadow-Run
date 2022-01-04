@@ -86,7 +86,7 @@ create()
     //teclado
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    console.log(this.hover_b.y)
+    //console.log(this.hover_b.y)
 
     //audio
 
@@ -152,7 +152,7 @@ update(time, delta)
 
             //sonido
             this.a_navder.play();
-            console.log(this.a_navder.key)
+            //console.log(this.a_navder.key)
 
             //animacion
             this.tweens.add({

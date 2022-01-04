@@ -66,7 +66,7 @@ $("#addMessage").click(function(){
      	success: function (data){
 		//console.log(data);
 		if(data == "[]"){
-       		console.log("no server data");
+       		//console.log("no server data");
         }else{
 		  
 			let count = 0;
