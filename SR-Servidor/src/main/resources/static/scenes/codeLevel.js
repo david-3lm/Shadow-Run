@@ -3,7 +3,9 @@ import Menu from "./menu.js";
 
 var connection = null;
 var teclaDBWS = false;
+var teclaLBWS = false;
 var teclaUp = false;
+var self = null;
 
 export default class CodeLevel extends Phaser.Scene {
 
@@ -1060,6 +1062,18 @@ update(time, delta)
         c.refreshBody();
     });
 
+  self = this;
+  	//EVENTO LEVANTAR TECLAS
+  	window.addEventListener("keyup", function (event) {
+	
+        if(event.keyCode==39 || event.keyCode==37){
+		console.log("entra");
+		self.wsPlayerPosition("idle");
+            //evento de ws quieto
+        }
+
+      },false);
+  
   
     //Controles del que huye
 
@@ -1073,6 +1087,8 @@ update(time, delta)
         this.playerB.flipX = false;
         this.cameras.main.followOffset.x = -100;
         
+        this.wsPlayerPosition("leftB");
+        
     }
     else if (this.cursors.right.isDown)
         {
@@ -1084,7 +1100,7 @@ update(time, delta)
         this.playerB.flipX = true;
         this.cameras.main.followOffset.x = -200;
         
-        this.wsPlayerPosition("run");
+        this.wsPlayerPosition("rightB");
         
         }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
         this.running=false;
@@ -1102,7 +1118,7 @@ update(time, delta)
         this.running=false;
         this.playerB.anims.play("idle");
         
-        this.wsPlayerPosition("idle");
+        //this.wsPlayerPosition("idle");
         }
 
     if(this.playerB.body.touching.down==false){
@@ -1191,7 +1207,7 @@ update(time, delta)
 }
    
    if(teclaDBWS==true){
-	console.log("if1");
+	//console.log("if1");
 	this.playerB.anims.play('run'); 
 
 	//this.running=true;
@@ -1199,14 +1215,25 @@ update(time, delta)
     this.playerB.setVelocityX(this.velocityB);
     this.playerB.flipX = true;
     this.cameras.main.followOffset.x = -200;
+    //teclaDBWS=false;
 }
 
-	if (teclaUp==true){
-		//this.running=false;
-		this.playerB.anims.play("idle");
-		//this.playerB.setVelocityX(0);
+	if(teclaLBWS==true){
+		console.log("izq");
+		this.playerB.anims.play('run'); //this.running=true;
+            
+        this.playerB.setVelocityX(-this.velocityB);
+        this.playerB.flipX = false;
+        this.cameras.main.followOffset.x = -100;
+        //teclaLBWS=false;
 	}
-   
+
+	if (teclaUp==true){
+		this.playerB.anims.play("idle");
+		//this.running = false;
+		//teclaUp=false;
+	}
+
    
 }
 
@@ -1337,7 +1364,7 @@ wsPlayerPosition(animkey){
 wsConnection(){
 	//var self = this;
 	if(connection==null){
-		connection = new WebSocket('ws://10.97.1.22:8080/game');
+		connection = new WebSocket('ws://10.97.0.60:8080/game');
 	}
 	
 		connection.onerror = function(e) {
@@ -1356,19 +1383,25 @@ wsConnection(){
 		 
 		 switch(parseKey){
 			
-			case "run":
-			teclaDBWS = true;
+			case "rightB":
 			teclaUp = false;
-			console.log("switch");
+			teclaDBWS = true;
+			teclaLBWS = false;
+			//console.log("switch");
 			//self.teclaDBWS();
 			break;
 			
+			case "leftB":
+			teclaUp = false;
+			teclaLBWS = true;
+			teclaDBWS = false;
+			console.log("izq2");
+			
 			case "idle":
-			console.log("F");
-
+			//console.log("F");
+			//teclaLBWS = false;
+			teclaDBWS = false;
 			teclaUp = true;
-			//teclaDBWS = false;
-			//self.teclaIsUp();
 			break;
 		}
 		 //self.wsPlayerBPosition(parseKey);

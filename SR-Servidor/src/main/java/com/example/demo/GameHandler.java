@@ -28,20 +28,19 @@ private Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 	
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-		//sendOtherParticipants(session, message.getPayload());
-	System.out.println("Message received: " + message.getPayload());
-			
-			String msg = message.getPayload();
-			session.sendMessage(new TextMessage(msg));
+		sendOtherParticipants(session, message.getPayload());
+			//System.out.println("Message received: " + message.getPayload());
+			//String msg = message.getPayload();
+			//session.sendMessage(new TextMessage(msg));
 		}
 
-	/*
+	
 	private void sendOtherParticipants(WebSocketSession session, String payload) throws IOException {
 		for(WebSocketSession participant : sessions.values()) {
 			if(!participant.getId().equals(session.getId())) {
 				participant.sendMessage(new TextMessage(payload));
 			}
 		}
-	}*/
+	}
 
 }
