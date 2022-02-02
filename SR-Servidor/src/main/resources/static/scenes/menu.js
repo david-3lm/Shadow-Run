@@ -332,10 +332,10 @@ update(time, delta)
         }
 
         if(this.estado == "code"){
-            this.scene.launch("CodeLevel");
+            this.scene.launch("Lobby");
             //this.scene.sleep("Menu");
             this.scene.stop("Menu");
-            this.scene.stop("MenuBackground");
+            //this.scene.stop("MenuBackground");
         }
 
         if(this.estado == "tienda"){

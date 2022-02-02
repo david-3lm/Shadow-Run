@@ -6,6 +6,8 @@ var teclaDBWS = false;
 var teclaLBWS = false;
 var teclaUp = false;
 var self = null;
+var rojo=true;
+
 
 export default class CodeLevel extends Phaser.Scene {
 
@@ -34,6 +36,7 @@ export default class CodeLevel extends Phaser.Scene {
         this.fin;
 
         this.camera;
+
         
     }
 
@@ -74,9 +77,7 @@ preload()
     //Señal flecha
     this.load.image("Arrow", "assets/menu/flechita2.png");
 
-    //Cartel victoria y derrota
-    this.load.image("win", "assets/sprites/VICTORIA.png");
-    this.load.image("lose", "assets/sprites/DERROTA.png");
+
 
     //Bandera
     this.load.image("flag", "assets/sprites/Flag.png");
@@ -140,6 +141,7 @@ create()
         frameQuantity: 9,
         immovable: true
     });
+    
     this.orbGroupR = this.physics.add.staticGroup({
         key: 'orbRedV',
         frameQuantity: 9,
@@ -147,6 +149,7 @@ create()
     });
 
     this.orbGroupB2 = this.physics.add.staticGroup({
+
         key: 'orbBlueJ',
         frameQuantity: 6,
         immovable: true
@@ -157,16 +160,6 @@ create()
         frameQuantity: 6,
         immovable: true
     });
-
-    // this.emitterB=this.particles.createEmitter({
-    //     frame: 'blue',
-    //     lifespan: 600,
-    //     speed: { min: 10, max: 200 },
-    //     gravityY: 300,
-    //     scale: { start: 0.4, end: 0 },
-    //     quantity: 0.003,
-    //     blendMode: 'ADD'
-    // });
 
     this.emitterPB=this.particles.createEmitter({
         frame: 'blue',
@@ -179,20 +172,12 @@ create()
     });
 
 
-    // this.emitterR=this.particles.createEmitter({
-    //     frame: 'red',
-    //     lifespan: 600,
-    //     speed: { min: 10, max: 200 },
-    //     gravityY: 300,
-    //     scale: { start: 0.4, end: 0 },
-    //     quantity: 0.003,
-    //     blendMode: 'ADD'
-    // });
 
     this.emitterPR=this.particles.createEmitter({
         frame: 'red',
         lifespan: 600,
         speed: { min: 10, max: 200 },
+
         gravityY: 300,
         scale: { start: 0.4, end: 0 },
         quantity: 0.003,
@@ -328,20 +313,37 @@ create()
     this.orbGroupB2.refresh();
     this.orbGroupR2.refresh();
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     this.playerR= this.physics.add.sprite(150,300,"pjR").setScale(0.25);
-    // this.anims.create({
-    //     key: 'run',
-    //     frames: this.anims.generateFrameNumbers('pj', { frames: [ 0, 1, 2, 3 ] }),
-    //     frameRate: 8,
-    //     repeat: -1
-    // });
-    // this.playerR.anims.play('run');
-
+    this.playerR.buff=0;
+    this.playerR.jump=0;
+    this.playerR.run=false;
+    this.playerR.animsKey='runR';
+	this.playerR.stopKey='idleR';
+	this.playerR.jumpKey='jumpR';
 
     //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
     this.playerB= this.physics.add.sprite(500,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
+	this.playerB.buff=0;
+	this.playerB.jump=0;
+	this.playerB.run=false;
+	this.playerB.animsKey= 'run';
+	this.playerB.stopKey='idle';
+	this.playerB.jumpKey='jump';
+	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
     this.tt=this.add.image(400,170,"tutorial").setScale(0.8);
     this.tuto=true;
     console.log(this.tt);
@@ -388,6 +390,572 @@ create()
     this.playerB.anims.play('run');
 
 
+	this.plataformas();
+
+ 
+    this.laser= this.physics.add.image(-1500,0,"laser").setScale(2);
+
+
+
+
+
+
+
+
+
+    //camara que seguirá a jugador
+    this.camera=this.cameras.main;
+    //this.camera=this.cameras.main.setSize(900,300);
+    this.camera=this.cameras.main.followOffset.set(-100,0);
+    //this.camera2=this.cameras.add(0, 300, 900, 300);
+
+    // //comprobar overlap con orbes 
+    
+    this.physics.add.overlap(this.playerB,this.orbGroupB,this.orbeVelocidadBV, null, this);
+    this.physics.add.overlap(this.playerB,this.orbGroupR,this.orbeVelocidadRV, null, this);
+    this.physics.add.overlap(this.playerB,this.orbGroupB2,this.orbeVelocidadBJ, null, this);
+    this.physics.add.overlap(this.playerB,this.orbGroupR2,this.orbeVelocidadRJ, null, this);
+
+    this.physics.add.overlap(this.playerR,this.orbGroupB,this.orbeVelocidadBV, null, this);
+    this.physics.add.overlap(this.playerR,this.orbGroupR,this.orbeVelocidadRV, null, this);
+    this.physics.add.overlap(this.playerR,this.orbGroupB2,this.orbeVelocidadBJ, null, this);
+    this.physics.add.overlap(this.playerR,this.orbGroupR2,this.orbeVelocidadRJ, null, this);
+
+    this.physics.add.overlap(this.playerB,this.laser,this.gameOver,null,this);
+    this.physics.add.overlap(this.playerR,this.laser,this.gameOver,null,this);
+    this.physics.add.overlap(this.playerB,this.playerR,this.catch,null,this);
+    
+        
+
+    //objeto cursor para uso teclado;
+    this.cursors = this.input.keyboard.createCursorKeys();
+
+    this.keyA= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.keyW= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.keyD= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+
+
+
+
+    
+    this.fin=false;
+}
+
+update(time, delta)
+{ 
+    if(this.fin==false && this.tuto==false){
+    this.playerB.setVelocityX(0);
+    this.playerR.setVelocityX(0);
+    
+    
+    if(this.buffB!=true ||this.newBuffB==true){
+        this.timerB=time;
+        this.newBuffB=false;
+    }else if(time-this.timerB>3000){
+        this.buffB=false;
+        this.playerB.buff=0;
+        this.playerB.jump=0;
+        this.emitterPB.stop();
+        this.emitterPR.stop();
+    }
+    if(this.buffR!=true || this.newBuffR==true){
+        this.timerR=time;
+        this.newBuffR=false;
+    }else if(time-this.timerR>3000){
+        this.buffR=false;
+        this.playerR.buff=0;
+        this.playerR.jump=0;
+        this.emitterPB.stop();
+        this.emitterPR.stop();
+
+    }
+
+	//SILENCIADO POR WS
+	/*
+    this.laser.y=this.playerB.y;
+    this.laser.x+=delta/3;
+    if(this.laser.x>25000)this.laser.x+=delta/2.25;
+	*/
+
+    if(this.playerB.y>950){
+        //this.gameOver(this.playerB);
+    }
+    if(this.playerR.y>950){
+        //this.gameOver(this.playerR);
+    }
+    if(this.playerB.x>48500){
+        //this.victory();
+    }
+
+
+    //Actualización del hitbox de las plataformas móviles
+    this.platformsM.children.iterate((c)=>{
+        c.refreshBody();
+    });
+
+  self = this;
+  	//EVENTO LEVANTAR TECLAS
+  	window.addEventListener("keyup", function (event) {
+	
+        if(event.keyCode==39 || event.keyCode==37){
+		//console.log("entra");
+		self.wsPlayerPosition("idle");
+            //evento de ws quieto
+        }
+
+      },false);
+  
+  
+    //Controles del que huye
+
+	
+	/*
+
+    if (this.cursors.left.isDown)
+        {   
+		
+        if(!this.running&&this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
+            
+        this.playerB.setVelocityX(-this.velocityB);
+        this.playerB.flipX = false;
+        this.cameras.main.followOffset.x = -100;
+        
+        this.wsPlayerPosition("leftB");
+        
+    }
+    else if (this.cursors.right.isDown)
+        {
+        if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
+		
+		//console.log(this.playerB.anims.play('run'));
+		
+        this.playerB.setVelocityX(this.velocityB);
+        this.playerB.flipX = true;
+        this.cameras.main.followOffset.x = -200;
+        
+        this.wsPlayerPosition("rightB");
+        
+        }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
+        this.running=false;
+        }
+
+    if (this.cursors.up.isDown && this.playerB.body.touching.down) 
+    {
+        this.jumpA.play();
+
+        this.playerB.setVelocityY(this.jumpB);
+
+    
+    }else*/ if (this.playerB.body.touching.down&& !this.playerB.run)
+        {
+        this.parar(this.playerB);
+        
+        //this.wsPlayerPosition("idle");
+        }
+        if (this.playerR.body.touching.down&& !this.playerR.run)
+        {
+        this.parar(this.playerR);
+        
+        //this.wsPlayerPosition("idle");
+        }
+
+    if(this.playerB.body.touching.down==false){
+        this.playerB.anims.play('jump');
+        this.running=false;
+    }
+
+    // this.playerR.body.followTarget(this.playerB);
+
+
+    //Controles del que persigue
+
+
+    if (this.keyA.isDown)
+        {   
+		if(rojo==true){
+			this.movimientoI(this.playerR);
+		}else{
+			this.movimientoI(this.playerB);
+		}
+        //if(!this.runningR&&this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
+        /*    
+        this.playerR.setVelocityX(-this.velocityR);
+        this.playerR.flipX = false;
+        //this.cameras.main.followOffset.x = -100;
+        */
+        
+    }
+    else if (this.keyD.isDown)
+        {
+		if(rojo==true){
+			this.movimientoD(this.playerR);
+		}else{
+			this.movimientoD(this.playerB);
+		}
+        //if(this.runningR!=true)if(this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
+		/*
+        this.playerR.setVelocityX(this.velocityR);
+        this.playerR.flipX = true;
+        //this.cameras.main.followOffset.x = -200; 
+        */
+        }else if(this.keyD.isUp && this.keyA.isUp ){
+        if(rojo==true){
+			this.parar(this.playerR);
+		}else{
+			this.parar(this.playerB);
+		}
+        }
+
+    if (this.keyW.isDown) 
+    {
+        if(rojo== true  && this.playerR.body.touching.down){
+        	this.salto(this.playerR);
+        }else if (rojo==false  && this.playerB.body.touching.down){
+			this.salto(this.playerB);
+	}
+	}
+   
+
+    if(this.playerR.body.touching.down==false){
+        this.playerR.anims.play('jumpR');
+        this.playerR.run=false;
+    }
+    
+     if(this.playerB.body.touching.down==false){
+        this.playerB.anims.play('jump');
+        this.playerB.run=false;
+    }
+   
+
+}else if(this.fin==true){
+    this.playerB.body.gravity.y=-2000;
+    this.playerR.body.gravity.y=-2000;
+    this.playerB.setVelocityX(0);
+    this.playerR.setVelocityX(0);
+    this.playerB.setVelocityY(0);
+    this.playerR.setVelocityY(0);
+    
+
+    if(this.cursors.space.isDown){
+        this.musicLvl.stop();
+        this.scene.launch("Menu", Menu);
+        this.scene.stop("CodeLevel",CodeLevel);
+        }
+}else if(this.tuto==true){
+    this.playerB.body.gravity.y=-2000;
+    this.playerR.body.gravity.y=-2000;
+    if(this.cursors.space.isDown){
+        this.tuto=false;
+        this.playerB.body.gravity.y=0;
+        this.playerR.body.gravity.y=0;
+        
+        if(rojo==true){
+        this.camera=this.cameras.main.startFollow(this.playerR, true, 0.2, 0.2);
+        }else{
+		this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
+		}
+        //this.camera2.startFollow(this.playerR, true, 0.2, 0.2)
+        this.musicLvl.play({
+            mute: false,
+            volume: 0.15,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: true,
+            delay: 0
+        });
+        }
+}
+  /*
+   if(teclaDBWS==true){
+	//console.log("if1");
+	this.playerB.anims.play('run'); 
+
+	//this.running=true;
+
+    this.playerB.setVelocityX(this.velocityB);
+    this.playerB.flipX = true;
+    this.cameras.main.followOffset.x = -200;
+    //teclaDBWS=false;
+}
+
+	if(teclaLBWS==true){
+		console.log("izq");
+		this.playerB.anims.play('run'); //this.running=true;
+            
+        this.playerB.setVelocityX(-this.velocityB);
+        this.playerB.flipX = false;
+        this.cameras.main.followOffset.x = -100;
+        //teclaLBWS=false;
+	}
+
+	if (teclaUp==true){
+		this.playerB.anims.play("idle");
+		//this.running = false;
+		//teclaUp=false;
+	}
+	*/
+
+   
+}
+
+movimientoI(player){
+	
+	player.setVelocityX(-600-player.buff);
+    player.flipX = false;
+    if(!player.run&&player.body.touching.down) player.anims.play(player.animsKey); player.run=true;
+}
+
+movimientoD(player){
+	player.setVelocityX(600+player.buff);
+    player.flipX = true;
+    if(!player.run&&player.body.touching.down) player.anims.play(player.animsKey); player.run=true;
+}
+
+parar(player){
+	player.run=false;
+	player.anims.play(player.stopKey);
+}
+
+salto(player){
+	player.setVelocityY(-800-player.jump);
+}
+
+
+orbeVelocidadBV(player,orbe) {
+	
+		if(player.buff<0){
+			return;
+		}
+
+        this.emitterPB.start();
+        this.emitterPB.startFollow(player);
+        this.orbGroupB.killAndHide(orbe);
+        orbe.body.enable = false;
+        //this.emitterB.stop();
+		
+		
+        if(player==this.playerB){
+        this.orbFine.play();
+        //this.velocityB=1000;
+        this.newBuffB=true;
+        this.buffB=true;
+        //-----------------//
+        player.buff=400;
+        
+        }else if(player== this.playerR){
+        this.orbBad.play();
+        //this.velocityR=300;
+        this.newBuffR=true;
+        this.buffR=true;
+        //----------------//
+        player.buff=-400;
+        
+    }
+       
+    }
+orbeVelocidadRV(player,orbe) {
+		if(player.buff<0){
+			return;
+		}
+		
+        this.emitterPR.start();
+        this.emitterPR.startFollow(player);
+        this.orbGroupR.killAndHide(orbe);
+        orbe.body.enable = false;
+        //this.emitterR.stop();
+
+        if(player==this.playerR){
+        this.orbFine.play();
+        //this.velocityR=1000;
+        this.newBuffR=true;
+        this.buffR=true;
+        //-----------------//
+        player.buff=400;
+        
+        }else if(player==this.playerB){
+        this.orbBad.play();
+        //this.velocityB=300;
+        this.newBuffB=true;
+        this.buffB=true;
+        //-----------------//
+        player.buff=-400;
+        
+    }
+}
+orbeVelocidadBJ(player,orbe) {
+
+    this.emitterPB.start();
+        this.emitterPB.startFollow(player);
+        this.orbGroupB2.killAndHide(orbe);
+        orbe.body.enable = false;
+        //this.emitterB.stop();
+
+        if(player==this.playerB){
+        this.orbFine.play();
+        //this.jumpB=-1200;
+        player.jump=400;
+        this.newBuffB=true;
+        this.buffB=true;
+        }else if(player== this.playerR){
+        this.orbBad.play();
+        //this.velocityR=300;
+        player.buff=-400;
+        this.newBuffR=true;
+        this.buffR=true;
+        
+    }
+}
+orbeVelocidadRJ(player,orbe) {
+
+    this.emitterPR.start();
+    this.emitterPR.startFollow(player);
+    this.orbGroupR2.killAndHide(orbe);
+    orbe.body.enable = false;
+    //this.emitterR.stop();
+
+    if(player==this.playerR){
+    this.orbFine.play();
+    //this.jumpR=-1200;
+    player.jump=400;
+    this.newBuffR=true;
+    this.buffR=true;
+    }else if(player==this.playerB){
+    this.orbBad.play();
+    //this.velocityB=300;
+    player.buff=-400;
+    this.newBuffB=true;
+    this.buffB=true;
+    
+}
+}
+
+gameOver(player){
+    this.fin=true;
+    this.musicLvl.stop();
+    this.lostA.play();
+    
+    
+    if(player==this.playerR){
+		/*
+        this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
+        this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
+        */
+        
+        if(rojo=true){
+			this.scene.stop("CodeLevel");
+            this.scene.launch("Derrota");
+		}else{
+			this.scene.stop("CodeLevel");
+            this.scene.launch("Victoria");
+		}
+    }else if(player==this.playerB){
+		/*
+        this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
+        this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8);   
+        */
+        if(rojo==true){
+			this.scene.stop("CodeLevel");
+            this.scene.launch("Victoria");
+		}else if(rojo==false){
+			this.scene.stop("CodeLevel");
+        	this.scene.launch("Derrota");
+		}
+        
+    }
+    
+}
+
+catch(){
+
+    this.fin=true;
+    /*
+    this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
+    this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8); 
+    */
+     if(rojo==true){
+			this.scene.stop("CodeLevel");
+            this.scene.launch("Victoria");
+		}else if(rojo==false){
+			this.scene.stop("CodeLevel");
+        	this.scene.launch("Derrota");
+		}
+
+}
+
+victory(){
+    this.winA.play();
+    this.fin=true;
+    this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
+    this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
+}
+
+wsPlayerPosition(animkey){
+	 var mssg = { key : animkey };
+			    var mssgJson = JSON.stringify(mssg);
+			    connection.send(mssgJson);
+}
+
+
+wsConnection(){
+	//var self = this;
+	if(connection==null){
+		connection = new WebSocket('ws://192.168.1.130:8080/game');
+	}
+	
+		connection.onerror = function(e) {
+		  console.log("WS error: " + e);
+		}
+		
+		connection.onmessage = function(msg){
+			//console.log(this);
+		  console.log("WS message: " + msg.data);
+		  //var parseMsgX = JSON.parse(msg.data).posX;
+		  //var parseMsgY = JSON.parse(msg.data).posY;
+		  //console.log(parseMsgX);
+		  //console.log(parseMsgY);
+		 var parseKey = JSON.parse(msg.data).key;
+		 //console.log(JSON.parse(msg.data).key);
+		 
+		 switch(parseKey){
+			
+			case "rightB":
+			teclaUp = false;
+			teclaDBWS = true;
+			teclaLBWS = false;
+			//console.log("switch");
+			//self.teclaDBWS();
+			break;
+			
+			case "leftB":
+			teclaUp = false;
+			teclaLBWS = true;
+			teclaDBWS = false;
+			console.log("izq2");
+			
+			case "idle":
+			//console.log("F");
+			//teclaLBWS = false;
+			teclaDBWS = false;
+			teclaUp = true;
+			break;
+		}
+		 //self.wsPlayerBPosition(parseKey);
+		 //self.wsPlayerAPosition(5,5);
+		  //$('#chat').append(msg.data)
+		}
+		connection.onclose = function() {
+			console.log("Closing socket");
+		}
+		connection.onopen = function() {
+			 console.log("hola");
+			}
+			    
+}
+
+plataformas(){
+	
 
     //----------------Plataformas---------------
     this.platforms = this.physics.add.staticGroup();
@@ -962,459 +1530,6 @@ create()
 
 
     //--------------Fin plataformas-------------//
-
- 
-    this.laser= this.physics.add.image(-1500,0,"laser").setScale(2);
-
-
-
-
-
-
-
-
-
-    //camara que seguirá a jugador
-    this.camera=this.cameras.main;
-    //this.camera=this.cameras.main.setSize(900,300);
-    this.camera=this.cameras.main.followOffset.set(-100,0);
-    //this.camera2=this.cameras.add(0, 300, 900, 300);
-
-    // //comprobar overlap con orbes 
-    
-    this.physics.add.overlap(this.playerB,this.orbGroupB,this.orbeVelocidadBV, null, this);
-    this.physics.add.overlap(this.playerB,this.orbGroupR,this.orbeVelocidadRV, null, this);
-    this.physics.add.overlap(this.playerB,this.orbGroupB2,this.orbeVelocidadBJ, null, this);
-    this.physics.add.overlap(this.playerB,this.orbGroupR2,this.orbeVelocidadRJ, null, this);
-
-    this.physics.add.overlap(this.playerR,this.orbGroupB,this.orbeVelocidadBV, null, this);
-    this.physics.add.overlap(this.playerR,this.orbGroupR,this.orbeVelocidadRV, null, this);
-    this.physics.add.overlap(this.playerR,this.orbGroupB2,this.orbeVelocidadBJ, null, this);
-    this.physics.add.overlap(this.playerR,this.orbGroupR2,this.orbeVelocidadRJ, null, this);
-
-    this.physics.add.overlap(this.playerB,this.laser,this.gameOver,null,this);
-    this.physics.add.overlap(this.playerR,this.laser,this.gameOver,null,this);
-    this.physics.add.overlap(this.playerB,this.playerR,this.catch,null,this);
-    
-        
-
-    //objeto cursor para uso teclado;
-    this.cursors = this.input.keyboard.createCursorKeys();
-
-    this.keyA= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-    this.keyW= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-    this.keyD= this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-
-
-
-
-
-    
-    this.fin=false;
-}
-
-update(time, delta)
-{ 
-    if(this.fin==false && this.tuto==false){
-    this.playerB.setVelocityX(0);
-    this.playerR.setVelocityX(0);
-    if(this.buffB!=true ||this.newBuffB==true){
-        this.timerB=time;
-        this.newBuffB=false;
-    }else if(time-this.timerB>3000){
-        this.buffB=false;
-        this.velocityB=600;
-        this.jumpB=-800;
-        this.emitterPB.stop();
-        this.emitterPR.stop();
-    }
-    if(this.buffR!=true || this.newBuffR==true){
-        this.timerR=time;
-    }else if(time-this.timerR>3000){
-        this.buffR=false;
-        this.velocityR=600;
-        this.jumpR=-800;
-        this.emitterPB.stop();
-        this.emitterPR.stop();
-
-    }
-
-	//SILENCIADO POR WS
-	/*
-    this.laser.y=this.playerB.y;
-    this.laser.x+=delta/3;
-    if(this.laser.x>25000)this.laser.x+=delta/2.25;
-	*/
-
-    if(this.playerB.y>950){
-        //this.gameOver(this.playerB);
-    }
-    if(this.playerR.y>950){
-        //this.gameOver(this.playerR);
-    }
-    if(this.playerB.x>48500){
-        //this.victory();
-    }
-
-
-    //Actualización del hitbox de las plataformas móviles
-    this.platformsM.children.iterate((c)=>{
-        c.refreshBody();
-    });
-
-  self = this;
-  	//EVENTO LEVANTAR TECLAS
-  	window.addEventListener("keyup", function (event) {
-	
-        if(event.keyCode==39 || event.keyCode==37){
-		console.log("entra");
-		self.wsPlayerPosition("idle");
-            //evento de ws quieto
-        }
-
-      },false);
-  
-  
-    //Controles del que huye
-
-
-    if (this.cursors.left.isDown)
-        {   
-
-        if(!this.running&&this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
-            
-        this.playerB.setVelocityX(-this.velocityB);
-        this.playerB.flipX = false;
-        this.cameras.main.followOffset.x = -100;
-        
-        this.wsPlayerPosition("leftB");
-        
-    }
-    else if (this.cursors.right.isDown)
-        {
-        if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
-		
-		//console.log(this.playerB.anims.play('run'));
-		
-        this.playerB.setVelocityX(this.velocityB);
-        this.playerB.flipX = true;
-        this.cameras.main.followOffset.x = -200;
-        
-        this.wsPlayerPosition("rightB");
-        
-        }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
-        this.running=false;
-        }
-
-    if (this.cursors.up.isDown && this.playerB.body.touching.down) 
-    {
-        this.jumpA.play();
-
-        this.playerB.setVelocityY(this.jumpB);
-
-    
-    }else if (this.playerB.body.touching.down&& !this.running)
-        {
-        this.running=false;
-        this.playerB.anims.play("idle");
-        
-        //this.wsPlayerPosition("idle");
-        }
-
-    if(this.playerB.body.touching.down==false){
-        this.playerB.anims.play('jump');
-        this.running=false;
-    }
-
-    // this.playerR.body.followTarget(this.playerB);
-
-
-    //Controles del que persigue
-
-
-    if (this.keyA.isDown)
-        {   
-
-        if(!this.runningR&&this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
-            
-        this.playerR.setVelocityX(-this.velocityR);
-        this.playerR.flipX = false;
-        //this.cameras.main.followOffset.x = -100;
-        
-    }
-    else if (this.keyD.isDown)
-        {
-        if(this.runningR!=true)if(this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
-
-        this.playerR.setVelocityX(this.velocityR);
-        this.playerR.flipX = true;
-        //this.cameras.main.followOffset.x = -200; 
-        }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
-        this.runningR=false;
-        }
-
-    if (this.keyW.isDown && this.playerR.body.touching.down) 
-    {
-        
-        this.playerR.setVelocityY(this.jumpR);
-
-    
-    }else if (this.playerR.body.touching.down&& !this.runningR)
-        {
-        this.runningR=false;
-        this.playerR.anims.play("idleR");
-
-        }
-
-    if(this.playerR.body.touching.down==false){
-        this.playerR.anims.play('jumpR');
-        this.runningR=false;
-    }
-
-}else if(this.fin==true){
-    this.playerB.body.gravity.y=-2000;
-    this.playerR.body.gravity.y=-2000;
-    this.playerB.setVelocityX(0);
-    this.playerR.setVelocityX(0);
-    this.playerB.setVelocityY(0);
-    this.playerR.setVelocityY(0);
-    
-
-    if(this.cursors.space.isDown){
-        this.musicLvl.stop();
-        this.scene.launch("Menu", Menu);
-        this.scene.stop("Level",Level);
-        }
-}else if(this.tuto==true){
-    this.playerB.body.gravity.y=-2000;
-    this.playerR.body.gravity.y=-2000;
-    if(this.cursors.space.isDown){
-        this.tuto=false;
-        this.playerB.body.gravity.y=0;
-        this.playerR.body.gravity.y=0;
-        this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
-        //this.camera2.startFollow(this.playerR, true, 0.2, 0.2)
-        this.musicLvl.play({
-            mute: false,
-            volume: 0.15,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: true,
-            delay: 0
-        });
-        }
-}
-   
-   if(teclaDBWS==true){
-	//console.log("if1");
-	this.playerB.anims.play('run'); 
-
-	//this.running=true;
-
-    this.playerB.setVelocityX(this.velocityB);
-    this.playerB.flipX = true;
-    this.cameras.main.followOffset.x = -200;
-    //teclaDBWS=false;
-}
-
-	if(teclaLBWS==true){
-		console.log("izq");
-		this.playerB.anims.play('run'); //this.running=true;
-            
-        this.playerB.setVelocityX(-this.velocityB);
-        this.playerB.flipX = false;
-        this.cameras.main.followOffset.x = -100;
-        //teclaLBWS=false;
-	}
-
-	if (teclaUp==true){
-		this.playerB.anims.play("idle");
-		//this.running = false;
-		//teclaUp=false;
-	}
-
-   
-}
-
-orbeVelocidadBV(player,orbe) {
-
-        this.emitterPB.start();
-        this.emitterPB.startFollow(player);
-        this.orbGroupB.killAndHide(orbe);
-        orbe.body.enable = false;
-        //this.emitterB.stop();
-
-        if(player==this.playerB){
-        this.orbFine.play();
-        this.velocityB=1000;
-        this.newBuffB=true;
-        this.buffB=true;
-        }else if(player== this.playerR){
-        this.orbBad.play();
-        this.velocityR=300;
-        this.newBuffR=true;
-        this.buffR=true;
-        
-    }
-       
-    }
-orbeVelocidadRV(player,orbe) {
-
-        this.emitterPR.start();
-        this.emitterPR.startFollow(player);
-        this.orbGroupR.killAndHide(orbe);
-        orbe.body.enable = false;
-        //this.emitterR.stop();
-
-        if(player==this.playerR){
-        this.orbFine.play();
-        this.velocityR=1000;
-        this.newBuffR=true;
-        this.buffR=true;
-        }else if(player==this.playerB){
-        this.orbBad.play();
-        this.velocityB=300;
-        this.newBuffB=true;
-        this.buffB=true;
-        
-    }
-}
-orbeVelocidadBJ(player,orbe) {
-
-    this.emitterPB.start();
-        this.emitterPB.startFollow(player);
-        this.orbGroupB2.killAndHide(orbe);
-        orbe.body.enable = false;
-        //this.emitterB.stop();
-
-        if(player==this.playerB){
-        this.orbFine.play();
-        this.jumpB=-1200;
-        this.newBuffB=true;
-        this.buffB=true;
-        }else if(player== this.playerR){
-        this.orbBad.play();
-        this.velocityR=300;
-        this.newBuffR=true;
-        this.buffR=true;
-        
-    }
-}
-orbeVelocidadRJ(player,orbe) {
-
-    this.emitterPR.start();
-    this.emitterPR.startFollow(player);
-    this.orbGroupR2.killAndHide(orbe);
-    orbe.body.enable = false;
-    //this.emitterR.stop();
-
-    if(player==this.playerR){
-    this.orbFine.play();
-    this.jumpR=-1200;
-    this.newBuffR=true;
-    this.buffR=true;
-    }else if(player==this.playerB){
-    this.orbBad.play();
-    this.velocityB=300;
-    this.newBuffB=true;
-    this.buffB=true;
-    
-}
-}
-
-gameOver(player){
-    this.fin=true;
-    this.musicLvl.stop();
-    this.lostA.play();
-    if(player==this.playerR){
-
-        this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
-        this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
-        }else if(player==this.playerB){
-        this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
-        this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8);   
-        
-    }
-    
-}
-
-catch(){
-
-    this.fin=true;
-    this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
-    this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8); 
-
-}
-
-victory(){
-    this.winA.play();
-    this.fin=true;
-    this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
-    this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
-}
-
-wsPlayerPosition(animkey){
-	 var mssg = { key : animkey };
-			    var mssgJson = JSON.stringify(mssg);
-			    connection.send(mssgJson);
-}
-
-
-wsConnection(){
-	//var self = this;
-	if(connection==null){
-		connection = new WebSocket('ws://10.97.0.60:8080/game');
-	}
-	
-		connection.onerror = function(e) {
-		  console.log("WS error: " + e);
-		}
-		
-		connection.onmessage = function(msg){
-			//console.log(this);
-		  console.log("WS message: " + msg.data);
-		  //var parseMsgX = JSON.parse(msg.data).posX;
-		  //var parseMsgY = JSON.parse(msg.data).posY;
-		  //console.log(parseMsgX);
-		  //console.log(parseMsgY);
-		 var parseKey = JSON.parse(msg.data).key;
-		 //console.log(JSON.parse(msg.data).key);
-		 
-		 switch(parseKey){
-			
-			case "rightB":
-			teclaUp = false;
-			teclaDBWS = true;
-			teclaLBWS = false;
-			//console.log("switch");
-			//self.teclaDBWS();
-			break;
-			
-			case "leftB":
-			teclaUp = false;
-			teclaLBWS = true;
-			teclaDBWS = false;
-			console.log("izq2");
-			
-			case "idle":
-			//console.log("F");
-			//teclaLBWS = false;
-			teclaDBWS = false;
-			teclaUp = true;
-			break;
-		}
-		 //self.wsPlayerBPosition(parseKey);
-		 //self.wsPlayerAPosition(5,5);
-		  //$('#chat').append(msg.data)
-		}
-		connection.onclose = function() {
-			console.log("Closing socket");
-		}
-		connection.onopen = function() {
-			 console.log("hola");
-			}
-			    
 }
 }
 /*

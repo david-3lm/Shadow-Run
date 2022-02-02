@@ -156,15 +156,14 @@ export default class SceneBackground extends Phaser.Scene {
         //cursor
         this.cursor = this.input.keyboard.createCursorKeys();
 
-        console.log(this.fogfront1);
-       
+        
     }
     update(time, delta) {
 
         //Crear la sensación de movimiento y profundidad
 
         //últimos
-        if (this.cursor.left.isDown)
+        if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown)
         {
             if(this.backbuildings1.x>=1){
                 this.backbuildings2.x=this.backbuildings1.x-this.WIDTH;
@@ -175,7 +174,7 @@ export default class SceneBackground extends Phaser.Scene {
             this.backbuildings1.x+=0.1;
             this.backbuildings2.x+=0.1;
         }
-        else if (this.cursor.right.isDown)
+        else if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown)
         {
             if(this.backbuildings1.x<=0){
                 this.backbuildings2.x=this.backbuildings1.x+this.WIDTH;
@@ -188,7 +187,7 @@ export default class SceneBackground extends Phaser.Scene {
         }
 
         //edificios del fondo 2
-        if (this.cursor.left.isDown)
+        if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown)
         {
             if(this.back2bs1.x>=1){
                 this.back2bs2.x=this.back2bs1.x-this.WIDTH;
@@ -199,7 +198,7 @@ export default class SceneBackground extends Phaser.Scene {
             this.back2bs1.x+=0.2;
             this.back2bs2.x+=0.2;
         }
-        else if (this.cursor.right.isDown)
+        else if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown)
         {
             if(this.back2bs1.x<=0){
                 this.back2bs2.x=this.back2bs1.x+this.WIDTH;
@@ -212,7 +211,7 @@ export default class SceneBackground extends Phaser.Scene {
         }
 
         //edificios del fondo 1
-        if (this.cursor.left.isDown)
+        if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown)
         {
             if(this.backbs1.x>=1){
                 this.backbs2.x=this.backbs1.x-this.WIDTH;
@@ -223,7 +222,7 @@ export default class SceneBackground extends Phaser.Scene {
             this.backbs1.x+=0.3;
             this.backbs2.x+=0.3;
         }
-        else if (this.cursor.right.isDown)
+        else if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown)
         {
             if(this.backbs1.x<=0){
                 this.backbs2.x=this.backbs1.x+this.WIDTH;
@@ -236,7 +235,7 @@ export default class SceneBackground extends Phaser.Scene {
         }
 
         //edificios del frente, raíles y niebla delantera
-        if (this.cursor.left.isDown)
+        if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown)
         {
             if(this.buildings1.x>=1){
                 this.buildings2.x=this.buildings1.x-this.WIDTH*2;
@@ -255,7 +254,7 @@ export default class SceneBackground extends Phaser.Scene {
             this.fogfront1.x+=0.5;
             this.fogfront2.x+=0.5;
         }
-        else if (this.cursor.right.isDown)
+        else if (this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown)
         {
             if(this.buildings1.x<=0){
                 this.buildings2.x=this.buildings1.x+this.WIDTH*2;
