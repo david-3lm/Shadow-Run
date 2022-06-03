@@ -1,12 +1,14 @@
 import SceneBackground from "./sceneBackground.js";
 import Menu from "./menu.js";
+import wsManager from './wsManager.js';
 
-var connection = null;
+
 var teclaDBWS = false;
 var teclaLBWS = false;
 var teclaUp = false;
 var self = null;
-var rojo=true;
+var rojo=null;
+var connection=null;
 
 
 export default class CodeLevel extends Phaser.Scene {
@@ -36,7 +38,7 @@ export default class CodeLevel extends Phaser.Scene {
         this.fin;
 
         this.camera;
-
+		
         
     }
 
@@ -105,8 +107,9 @@ preload()
 
 create()
 {
-	this.wsConnection();
-	
+	connection=this.scene.get('wsManager').connection;
+	//this.wsConnection();
+	rojo= this.scene.get('wsManager').rojo;
     this.scene.get("Menu").music.stop();
     //audio para el nivel
     this.musicLvl = this.sound.add("techcity");
@@ -134,6 +137,7 @@ create()
     this.scene.launch("SceneBackground",SceneBackground);
     this.scene.sendToBack("SceneBackground");
 
+	//Creacion de los orbes y particulas
     this.particles=this.add.particles('flares');
    
     this.orbGroupB = this.physics.add.staticGroup({
@@ -171,8 +175,6 @@ create()
         blendMode: 'ADD'
     });
 
-
-
     this.emitterPR=this.particles.createEmitter({
         frame: 'red',
         lifespan: 600,
@@ -183,6 +185,8 @@ create()
         quantity: 0.003,
         blendMode: 'ADD'
     });
+    
+    //Posiciones de los orbes
 
     var childrenB = this.orbGroupB.getChildren();
     childrenB[0].setPosition(3600,400).setScale(0.5).refreshBody();
@@ -226,6 +230,8 @@ create()
     childrenR2[5].setPosition(47100,300).setScale(0.5).refreshBody();
     //this.emitterR.startFollow(childrenR2[0]);
 
+
+	//Animaciones de los orbes
     this.orbGroupB.children.iterate((c)=>{
         let tween=  this.tweens.add({
         targets: c,
@@ -316,7 +322,7 @@ create()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+								//Jugadores//
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,18 +330,23 @@ create()
     this.playerR.buff=0;
     this.playerR.jump=0;
     this.playerR.run=false;
+    this.playerR.right=true;
     this.playerR.animsKey='runR';
 	this.playerR.stopKey='idleR';
 	this.playerR.jumpKey='jumpR';
+	this.playerR.body.setSize(150);
 
     //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
     this.playerB= this.physics.add.sprite(500,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
 	this.playerB.buff=0;
 	this.playerB.jump=0;
 	this.playerB.run=false;
+	this.playerB.right=true;
 	this.playerB.animsKey= 'run';
 	this.playerB.stopKey='idle';
 	this.playerB.jumpKey='jump';
+	this.playerB.body.setSize(150);
+	console.log(this.playerB)
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -346,7 +357,6 @@ create()
 	
     this.tt=this.add.image(400,170,"tutorial").setScale(0.8);
     this.tuto=true;
-    console.log(this.tt);
 
     this.anims.create({
         key: 'run',
@@ -387,7 +397,7 @@ create()
     });
 
     this.playerR.anims.play('idleR');
-    this.playerB.anims.play('run');
+    this.playerB.anims.play('idle');
 
 
 	this.plataformas();
@@ -487,7 +497,7 @@ update(time, delta)
     if(this.playerB.x>48500){
         //this.victory();
     }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //Actualización del hitbox de las plataformas móviles
     this.platformsM.children.iterate((c)=>{
@@ -496,69 +506,7 @@ update(time, delta)
 
   self = this;
   	//EVENTO LEVANTAR TECLAS
-  	window.addEventListener("keyup", function (event) {
-	
-        if(event.keyCode==39 || event.keyCode==37){
-		//console.log("entra");
-		self.wsPlayerPosition("idle");
-            //evento de ws quieto
-        }
 
-      },false);
-  
-  
-    //Controles del que huye
-
-	
-	/*
-
-    if (this.cursors.left.isDown)
-        {   
-		
-        if(!this.running&&this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
-            
-        this.playerB.setVelocityX(-this.velocityB);
-        this.playerB.flipX = false;
-        this.cameras.main.followOffset.x = -100;
-        
-        this.wsPlayerPosition("leftB");
-        
-    }
-    else if (this.cursors.right.isDown)
-        {
-        if(this.running!=true)if(this.playerB.body.touching.down) this.playerB.anims.play('run'); this.running=true;
-		
-		//console.log(this.playerB.anims.play('run'));
-		
-        this.playerB.setVelocityX(this.velocityB);
-        this.playerB.flipX = true;
-        this.cameras.main.followOffset.x = -200;
-        
-        this.wsPlayerPosition("rightB");
-        
-        }else if(this.cursors.right.isUp && this.cursors.left.isUp ){
-        this.running=false;
-        }
-
-    if (this.cursors.up.isDown && this.playerB.body.touching.down) 
-    {
-        this.jumpA.play();
-
-        this.playerB.setVelocityY(this.jumpB);
-
-    
-    }else*/ if (this.playerB.body.touching.down&& !this.playerB.run)
-        {
-        this.parar(this.playerB);
-        
-        //this.wsPlayerPosition("idle");
-        }
-        if (this.playerR.body.touching.down&& !this.playerR.run)
-        {
-        this.parar(this.playerR);
-        
-        //this.wsPlayerPosition("idle");
-        }
 
     if(this.playerB.body.touching.down==false){
         this.playerB.anims.play('jump');
@@ -568,7 +516,7 @@ update(time, delta)
     // this.playerR.body.followTarget(this.playerB);
 
 
-    //Controles del que persigue
+    //Controles del Jugador
 
 
     if (this.keyA.isDown)
@@ -696,21 +644,47 @@ update(time, delta)
 		//teclaUp=false;
 	}
 	*/
-
-   
+ 	///////////////////////////FUNCION QUE ENVIE POSICIONES//////////////////////// 
+   	// si rojo envia las de rojo y vice
+   	 if(rojo){this.enviarMSG(this.playerR);}
+   	 else{this.enviarMSG(this.playerB);}
+   	
+   	
+   	
+   	//////////////////////////FUERA DEL UPDATE FUNCION QUE ACTUALICE EL OTRO JUGADOR////////////
 }
 
 movimientoI(player){
-	
 	player.setVelocityX(-600-player.buff);
-    player.flipX = false;
+	player.right=false
+    player.flipX = player.right;
     if(!player.run&&player.body.touching.down) player.anims.play(player.animsKey); player.run=true;
 }
 
 movimientoD(player){
 	player.setVelocityX(600+player.buff);
-    player.flipX = true;
+	player.right =true;
+    player.flipX = player.right;
     if(!player.run&&player.body.touching.down) player.anims.play(player.animsKey); player.run=true;
+}
+
+animacion(run,r){
+	if(rojo==true) var player= this.playerB;
+	else var player= this.playerR;
+	console.log(r);
+	player.flipX = r;
+	if(!player.run&&run){
+		player.anims.play(player.animsKey); 
+		player.run=true
+	}
+	else if(!run&&player.run){
+		 player.run=false; 
+		 player.anims.play(player.stopKey); 
+	}
+}
+
+enviarMSG(player){
+	this.wsPlayerPosition(player.x,player.y,player.run,player.right);
 }
 
 parar(player){
@@ -869,17 +843,18 @@ gameOver(player){
 
 catch(){
 
-    this.fin=true;
-    /*
-    this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
-    this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8); 
-    */
+    
+
      if(rojo==true){
 			this.scene.stop("CodeLevel");
+			this.fin=true;
             this.scene.launch("Victoria");
+            this.scene.get('wsManager').connection.close();
 		}else if(rojo==false){
 			this.scene.stop("CodeLevel");
+			this.fin=true;
         	this.scene.launch("Derrota");
+        	this.scene.get('wsManager').connection.close();
 		}
 
 }
@@ -891,68 +866,31 @@ victory(){
     this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
 }
 
-wsPlayerPosition(animkey){
-	 var mssg = { key : animkey };
-			    var mssgJson = JSON.stringify(mssg);
-			    connection.send(mssgJson);
-}
-
-
-wsConnection(){
-	//var self = this;
-	if(connection==null){
-		connection = new WebSocket('ws://192.168.1.130:8080/game');
+getWsPlayerPos(x,y){
+	if(rojo){
+		this.playerB.x = x;
+		this.playerB.y= y;
+	}else{
+		this.playerR.x = x;
+		this.playerR.y= y;
 	}
-	
-		connection.onerror = function(e) {
-		  console.log("WS error: " + e);
-		}
-		
-		connection.onmessage = function(msg){
-			//console.log(this);
-		  console.log("WS message: " + msg.data);
-		  //var parseMsgX = JSON.parse(msg.data).posX;
-		  //var parseMsgY = JSON.parse(msg.data).posY;
-		  //console.log(parseMsgX);
-		  //console.log(parseMsgY);
-		 var parseKey = JSON.parse(msg.data).key;
-		 //console.log(JSON.parse(msg.data).key);
-		 
-		 switch(parseKey){
-			
-			case "rightB":
-			teclaUp = false;
-			teclaDBWS = true;
-			teclaLBWS = false;
-			//console.log("switch");
-			//self.teclaDBWS();
-			break;
-			
-			case "leftB":
-			teclaUp = false;
-			teclaLBWS = true;
-			teclaDBWS = false;
-			console.log("izq2");
-			
-			case "idle":
-			//console.log("F");
-			//teclaLBWS = false;
-			teclaDBWS = false;
-			teclaUp = true;
-			break;
-		}
-		 //self.wsPlayerBPosition(parseKey);
-		 //self.wsPlayerAPosition(5,5);
-		  //$('#chat').append(msg.data)
-		}
-		connection.onclose = function() {
-			console.log("Closing socket");
-		}
-		connection.onopen = function() {
-			 console.log("hola");
-			}
-			    
 }
+
+wsPlayerPosition(x,y,run,r){
+	 var mssg = { 
+		posX : x,
+		posY : y,
+		running : run,
+		right :r
+	 };
+    	var mssgJson = JSON.stringify(mssg);
+		connection.send(mssgJson);
+}
+
+
+
+
+
 
 plataformas(){
 	
@@ -1532,30 +1470,3 @@ plataformas(){
     //--------------Fin plataformas-------------//
 }
 }
-/*
-function wsConnection(){
-	
-		  
-	connection = new WebSocket('ws://10.97.4.24:8080/game');
-		connection.onerror = function(e) {
-		  console.log("WS error: " + e);
-		}
-		
-		connection.onmessage = function(msg) {
-		  console.log("WS message: " + msg.data);
-		  var parseMsgX = JSON.parse(msg.data).posX;
-		  var parseMsgY = JSON.parse(msg.data).posY;
-		  console.log(parseMsgX);
-		  console.log(parseMsgY);
-		   
-		  CodeLevel.wsPlayerAPosition(parseMsgX,parseMsgY);
-		  //$('#chat').append(msg.data)
-		}
-		connection.onclose = function() {
-			console.log("Closing socket");
-		}
-		connection.onopen = function() {
-			 console.log("hola");
-			}
-
-} */

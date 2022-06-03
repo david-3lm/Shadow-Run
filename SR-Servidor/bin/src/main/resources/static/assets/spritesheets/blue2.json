@@ -1,0 +1,89 @@
+{
+
+	"frames": [{
+			"filename": "blue2_0.png",
+			"frame": {
+				"x": 140,
+				"y": 97,
+				"w": 330,
+				"h": 285
+			},
+			"anchor": {
+				"x": 1,
+				"y": 1
+			}
+		},
+		{
+			"filename": "blue2_1.png",
+			"frame": {
+				"x": 140,
+				"y": 474,
+				"w": 345,
+				"h": 285
+			}
+		},
+		{
+			"filename": "blue2_2.png",
+			"frame": {
+				"x": 140,
+				"y": 907,
+				"w": 270,
+				"h": 285
+			}
+		},
+		{
+			"filename": "blue2_3.png",
+			"frame": {
+				"x": 140,
+				"y": 1305,
+				"w": 320,
+				"h": 285
+			}
+		},
+		{
+			"filename": "blue2_4.png",
+			"frame": {
+				"x": 140,
+				"y": 1730,
+				"w": 330,
+				"h": 285
+			}
+		},
+		{
+			"filename": "blue2_5.png",
+			"frame": {
+				"x": 580,
+				"y": 75,
+				"w": 350,
+				"h": 285
+			}
+		},
+		{
+			"filename": "blue2_6.png",
+			"frame": {
+				"x": 580,
+				"y": 493,
+				"w": 270,
+				"h": 285
+			}
+		},
+		{
+			"filename": "blue2_7.png",
+			"frame": {
+				"x": 580,
+				"y": 920,
+				"w": 300,
+				"h": 285
+			}
+		},
+		{
+			"filename": "blue2_8.png",
+			"frame": {
+				"x": 530,
+				"y": 1411,
+				"w": 140,
+				"h": 360
+			}
+		}
+	]
+}

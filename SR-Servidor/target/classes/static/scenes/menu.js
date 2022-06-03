@@ -86,7 +86,7 @@ create()
     //teclado
     this.cursors = this.input.keyboard.createCursorKeys();
 
-    console.log(this.hover_b.y)
+    //console.log(this.hover_b.y)
 
     //audio
 
@@ -152,7 +152,7 @@ update(time, delta)
 
             //sonido
             this.a_navder.play();
-            console.log(this.a_navder.key)
+            //console.log(this.a_navder.key)
 
             //animacion
             this.tweens.add({
@@ -332,8 +332,10 @@ update(time, delta)
         }
 
         if(this.estado == "code"){
-            this.scene.launch("Code");
-            this.scene.sleep("Menu");
+            this.scene.launch("Lobby");
+            //this.scene.sleep("Menu");
+            this.scene.stop("Menu");
+            //this.scene.stop("MenuBackground");
         }
 
         if(this.estado == "tienda"){

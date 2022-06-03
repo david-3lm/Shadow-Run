@@ -10,6 +10,7 @@ import Config from "./scenes/config.js"
 import Victoria from "./scenes/victoria.js"
 import Derrota from "./scenes/derrota.js"
 import Lobby from "./scenes/lobby.js"
+import wsManager from "./scenes/wsManager.js"
 
 window.onload= function(){
 
@@ -22,10 +23,10 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 2000 },
-            debug: false
+            debug: true
         }
     },
-    scene: [Menu, Level, CodeLevel, SceneBackground, MenuBackground, Credits, Code, Config, Tienda, Victoria, Derrota, Lobby]
+    scene: [Menu, Level, CodeLevel, SceneBackground, MenuBackground, Credits, Code, Config, Tienda, Victoria, Derrota, Lobby,wsManager]
 };
 
 var game = new Phaser.Game(config);

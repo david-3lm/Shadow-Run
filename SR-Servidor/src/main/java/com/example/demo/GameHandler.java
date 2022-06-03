@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import java.io.IOException;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -9,14 +10,22 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.example.demo.*;
+
 public class GameHandler extends TextWebSocketHandler{
 	
 private Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
+
+Lobby l=new Lobby();
+
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		System.out.println("New session: " + session.getId());
+		l.addPlayer(session);
 		sessions.put(session.getId(), session);
+		
+		
 	}
 	
 	@Override

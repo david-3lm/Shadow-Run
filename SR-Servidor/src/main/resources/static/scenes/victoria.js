@@ -22,6 +22,8 @@ export default class Victoria extends Phaser.Scene {
 		if(this.cursors.space.isDown){
             this.scene.stop("Victoria");
             this.scene.stop("MenuBackground");
+            this.scene.get('wsManager').connection=null;
+            this.scene.stop("wsManager");
             this.scene.launch("Menu",Menu);
         }
 	}

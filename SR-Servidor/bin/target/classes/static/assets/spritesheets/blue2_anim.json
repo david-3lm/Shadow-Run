@@ -1,0 +1,54 @@
+{
+    "anims": [{
+        "key": "runB",
+        "type": "frames",
+        "repeat": -1,
+        "frameRate": 12,
+        "frames": [{
+                "key": "pj",
+                "frame": "blue2_0.png"
+            },
+            {
+                "key": "pj",
+                "frame": "blue2_1.png"
+            },
+            {
+                "key": "pj",
+                "frame": "blue2_2.png"
+            },
+            {
+                "key": "pj",
+                "frame": "blue2_3.png"
+            },
+            {
+                "key": "pj",
+                "frame": "blue2_4.png"
+            },
+            {
+                "key": "pj",
+                "frame": "blue2_5.png"
+            },
+            {
+                "key": "pj",
+                "frame": "blue2_6.png"
+            },
+            {
+                "key": "pj",
+                "frame": "blue2_7.png"
+            }
+        ]
+
+    },
+    {
+        "key": "idleB",
+        "type": "frames",
+        "repeat": -1,
+        "frames": [
+            {
+                "key": "pj",
+                "frame": "blue2_8.png"
+            }
+        ]
+    }
+    ]
+}
