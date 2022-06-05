@@ -5,6 +5,8 @@ import codeLevel from './codeLevel.js';
 export default class wsManager extends Phaser.Scene {
 	rojo= null;
 	partidaIniciada=false;
+	tutoFin=false;
+	cont= 0;
 	
 	connection;
 	 constructor() {
@@ -33,6 +35,10 @@ export default class wsManager extends Phaser.Scene {
 		this.scene.get('Lobby').inicioGame();
 	}
 	
+	tutoFinal(){
+		this.scene.get('CodeLevel').inicioGame();
+	}
+	
 	enviarPos(x,y,run,r){
 		this.scene.get('CodeLevel').getWsPlayerPos(x,y);
 		this.scene.get('CodeLevel').animacion(run,r)
@@ -50,32 +56,34 @@ export default class wsManager extends Phaser.Scene {
 		}
 		
 		this.connection.onmessage = function(msg){
-			//console.log(this);
-		  console.log("WS message: " + msg.data);
-		  //var parseMsgX = JSON.parse(msg.data).posX;
-		  //var parseMsgY = JSON.parse(msg.data).posY;
-		  //console.log(parseMsgX);
-		  //console.log(parseMsgY);
-		 //var parseKey = JSON.parse(msg.data).key;
-		 //console.log(JSON.parse(msg.data).key);
 		 var ms= msg.data;
-		 console.log(ms);
 		 if(ms=="r" || ms=="a"){
 		 	self.selectorRol(msg.data);
 
 		 }else if(!this.partidaIniciada){
 			this.partidaIniciada=true;
 			self.inicioPartida();
+		 }else if(!this.tutoFin){
+		
+			this.tutoFin=true;
+			self.tutoFinal();
+		
 		 }else{
-			var x= JSON.parse(msg.data).posX;
-			var y= JSON.parse(msg.data).posY;
-			var run= JSON.parse(msg.data).running;
-			var r = JSON.parse(msg.data).right;
-			self.enviarPos(x,y,run,r);
+			var fin= JSON.parse(msg.data).fin;
+			if(fin){
+				var winR = JSON.parse(msg.data).winRed;
+
+				self.scene.get('CodeLevel').recibeMSGFin(winR)
+
+			}else{
+				var x= JSON.parse(msg.data).posX;
+				var y= JSON.parse(msg.data).posY;
+				var run= JSON.parse(msg.data).running;
+				var r = JSON.parse(msg.data).right;
+				self.enviarPos(x,y,run,r);
+			}
+			
 		 }
-		 //self.wsPlayerBPosition(parseKey);
-		 //self.wsPlayerAPosition(5,5);
-		  //$('#chat').append(msg.data)
 		}
 		this.connection.onclose = function() {
 			

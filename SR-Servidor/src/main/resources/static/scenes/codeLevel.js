@@ -22,6 +22,7 @@ export default class CodeLevel extends Phaser.Scene {
         this.jumpB=-800;
         this.buffB=false;
         this.particles = null;
+        this.grav= 2000;
 
         this.emitterPB=null;
         this.emitterPR=null;
@@ -355,7 +356,7 @@ create()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	
-    this.tt=this.add.image(400,170,"tutorial").setScale(0.8);
+    this.tt=this.add.image(400,260,"tutorial").setScale(1.2);
     this.tuto=true;
 
     this.anims.create({
@@ -454,6 +455,9 @@ create()
 
 update(time, delta)
 { 
+	
+	
+	
     if(this.fin==false && this.tuto==false){
     this.playerB.setVelocityX(0);
     this.playerR.setVelocityX(0);
@@ -576,74 +580,47 @@ update(time, delta)
     }
    
 
-}else if(this.fin==true){
-    this.playerB.body.gravity.y=-2000;
-    this.playerR.body.gravity.y=-2000;
-    this.playerB.setVelocityX(0);
-    this.playerR.setVelocityX(0);
-    this.playerB.setVelocityY(0);
-    this.playerR.setVelocityY(0);
-    
-
-    if(this.cursors.space.isDown){
-        this.musicLvl.stop();
-        this.scene.launch("Menu", Menu);
-        this.scene.stop("CodeLevel",CodeLevel);
-        }
-}else if(this.tuto==true){
-    this.playerB.body.gravity.y=-2000;
-    this.playerR.body.gravity.y=-2000;
-    if(this.cursors.space.isDown){
-        this.tuto=false;
-        this.playerB.body.gravity.y=0;
-        this.playerR.body.gravity.y=0;
-        
-        if(rojo==true){
-        this.camera=this.cameras.main.startFollow(this.playerR, true, 0.2, 0.2);
-        }else{
-		this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
-		}
-        //this.camera2.startFollow(this.playerR, true, 0.2, 0.2)
-        this.musicLvl.play({
-            mute: false,
-            volume: 0.15,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: true,
-            delay: 0
-        });
-        }
-}
-  /*
-   if(teclaDBWS==true){
-	//console.log("if1");
-	this.playerB.anims.play('run'); 
-
-	//this.running=true;
-
-    this.playerB.setVelocityX(this.velocityB);
-    this.playerB.flipX = true;
-    this.cameras.main.followOffset.x = -200;
-    //teclaDBWS=false;
-}
-
-	if(teclaLBWS==true){
-		console.log("izq");
-		this.playerB.anims.play('run'); //this.running=true;
-            
-        this.playerB.setVelocityX(-this.velocityB);
-        this.playerB.flipX = false;
-        this.cameras.main.followOffset.x = -100;
-        //teclaLBWS=false;
+	}else if(this.fin==true){
+	    this.playerB.body.gravity.y=-2000;
+    	this.playerR.body.gravity.y=-2000;
+	    this.playerB.setVelocityX(0);
+	    this.playerR.setVelocityX(0);
+	    this.playerB.setVelocityY(0);
+	    this.playerR.setVelocityY(0);
+	    
+	
+	    if(this.cursors.space.isDown){
+	        this.musicLvl.stop();
+	        this.scene.launch("Menu", Menu);
+	        this.scene.stop("CodeLevel",CodeLevel);
+	        }
+	}else if(this.tuto==true){
+		this.playerB.body.gravity.y=-2000;
+    	this.playerR.body.gravity.y=-2000;
+	    if(this.cursors.space.isDown){
+	        this.tuto=false;
+	        //connection.send("Inicia");
+	        this.playerB.body.gravity.y=0;
+    		this.playerR.body.gravity.y=0;
+	        
+	        if(rojo==true){
+	        this.camera=this.cameras.main.startFollow(this.playerR, true, 0.2, 0.2);
+	        }else{
+			this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
+			}
+	        //this.camera2.startFollow(this.playerR, true, 0.2, 0.2)
+	        this.musicLvl.play({
+	            mute: false,
+	            volume: 0.15,
+	            rate: 1,
+	            detune: 0,
+	            seek: 0,
+	            loop: true,
+	            delay: 0
+	        });
+	        }
 	}
-
-	if (teclaUp==true){
-		this.playerB.anims.play("idle");
-		//this.running = false;
-		//teclaUp=false;
-	}
-	*/
+ 
  	///////////////////////////FUNCION QUE ENVIE POSICIONES//////////////////////// 
    	// si rojo envia las de rojo y vice
    	 if(rojo){this.enviarMSG(this.playerR);}
@@ -652,6 +629,12 @@ update(time, delta)
    	
    	
    	//////////////////////////FUERA DEL UPDATE FUNCION QUE ACTUALICE EL OTRO JUGADOR////////////
+}
+
+inicioGame(){
+	this.tuto=false;
+	this.grav=0;
+    
 }
 
 movimientoI(player){
@@ -671,7 +654,6 @@ movimientoD(player){
 animacion(run,r){
 	if(rojo==true) var player= this.playerB;
 	else var player= this.playerR;
-	console.log(r);
 	player.flipX = r;
 	if(!player.run&&run){
 		player.anims.play(player.animsKey); 
@@ -684,7 +666,14 @@ animacion(run,r){
 }
 
 enviarMSG(player){
-	this.wsPlayerPosition(player.x,player.y,player.run,player.right);
+	this.wsPlayerPosition(player.x,player.y,player.run,player.right, false, false);
+}
+
+victoriaRojo(){
+	this.wsPlayerPosition(0,0,0,0, true, true);
+}
+victoriaAzul(){
+	this.wsPlayerPosition(0,0,0,0, true, false);
 }
 
 parar(player){
@@ -728,7 +717,7 @@ orbeVelocidadBV(player,orbe) {
         
     }
        
-    }
+}
 orbeVelocidadRV(player,orbe) {
 		if(player.buff<0){
 			return;
@@ -813,22 +802,24 @@ gameOver(player){
     
     if(player==this.playerR){
 		/*
-        this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
-        this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
+        Evento victoria azul
         */
+        this.victoriaAzul();
         
-        if(rojo=true){
+        if(rojo==true){
 			this.scene.stop("CodeLevel");
             this.scene.launch("Derrota");
 		}else{
 			this.scene.stop("CodeLevel");
             this.scene.launch("Victoria");
 		}
+		
     }else if(player==this.playerB){
 		/*
-        this.add.image(this.playerR.x+200,this.playerR.y,"win").setScale(0.8);
-        this.add.image(this.playerB.x+200,this.playerB.y,"lose").setScale(0.8);   
+        Evento victoria rojo   
         */
+        this.victoriaRojo();
+        
         if(rojo==true){
 			this.scene.stop("CodeLevel");
             this.scene.launch("Victoria");
@@ -838,25 +829,45 @@ gameOver(player){
 		}
         
     }
+    this.scene.get("wsManager").connection.close();
     
+}
+
+recibeMSGFin(victoriaRoja){
+	
+    if(!victoriaRoja){
+
+        if(rojo==true){
+			this.scene.stop("CodeLevel");
+            this.scene.launch("Derrota");
+		}else{
+			this.scene.stop("CodeLevel");
+            this.scene.launch("Victoria");
+		}
+    }else{
+        if(rojo==true){
+			this.scene.stop("CodeLevel");
+            this.scene.launch("Victoria");
+		}else if(rojo==false){
+			this.scene.stop("CodeLevel");
+        	this.scene.launch("Derrota");
+		}
+        
+    }
+    this.scene.get("wsManager").connection.close();
 }
 
 catch(){
 
-    
-
-     if(rojo==true){
-			this.scene.stop("CodeLevel");
-			this.fin=true;
-            this.scene.launch("Victoria");
-            this.scene.get('wsManager').connection.close();
-		}else if(rojo==false){
-			this.scene.stop("CodeLevel");
-			this.fin=true;
-        	this.scene.launch("Derrota");
-        	this.scene.get('wsManager').connection.close();
-		}
-
+    this.victoriaRojo();
+    if(rojo==true){
+		this.scene.stop("CodeLevel");
+        this.scene.launch("Victoria");
+	}else if(rojo==false){
+		this.scene.stop("CodeLevel");
+    	this.scene.launch("Derrota");
+	}
+	this.scene.get("wsManager").connection.close();
 }
 
 victory(){
@@ -876,12 +887,14 @@ getWsPlayerPos(x,y){
 	}
 }
 
-wsPlayerPosition(x,y,run,r){
+wsPlayerPosition(x,y,run,r,f,wR){
 	 var mssg = { 
 		posX : x,
 		posY : y,
 		running : run,
-		right :r
+		right :r,
+		fin: f,
+		winRed: wR
 	 };
     	var mssgJson = JSON.stringify(mssg);
 		connection.send(mssgJson);
