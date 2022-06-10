@@ -40,7 +40,8 @@ create()
     // this.physics.add.overlap();
     // //objeto cursor para uso teclado;
     // this.cursors = this.input.keyboard.createCursorKeys();
-
+    
+	this.cameras.main.fadeIn(1000, 0, 0, 0)
     this.interface= this.add.image(-5,0,"interface").setScale(0.9).setOrigin(0,-0.05);
     this.interface.depth = 0.1;
 
@@ -59,29 +60,29 @@ create()
     //hover con sus posiciones iniciales(fuera de la pantalla) y finales(donde encajan)
 
     //code
-    this.hover_r=this.add.image(950,280,"hover_r");
-    this.hover_r.startx = 950;
-    this.hover_r.endx = 590;
+    this.hover_r=this.add.image(1100,285,"hover_r");
+    this.hover_r.startx = 1000;
+    this.hover_r.endx = 600;
     
     //play
-    this.hover_l=this.add.image(218,285,"hover_l");
-    this.hover_l.startx = 218;
+    this.hover_l=this.add.image(220,290,"hover_l");
+    this.hover_l.startx = 220;
     this.hover_l.endx = -120;
 
     //credits
     this.hover_bl=this.add.image(107,620,"hover_bl");
     this.hover_bl.starty = 620;
-    this.hover_bl.endy = 510;
+    this.hover_bl.endy = 515;
 
     //configuracion
-    this.hover_br=this.add.image(696,620,"hover_br");
+    this.hover_br=this.add.image(710,620,"hover_br");
     this.hover_br.starty = 620;
-    this.hover_br.endy = 510;
+    this.hover_br.endy = 517;
 
     //tienda
-    this.hover_b=this.add.image(410,630,"hover_b");
+    this.hover_b=this.add.image(417,630,"hover_b");
     this.hover_b.starty = 630;
-    this.hover_b.endy = 520;
+    this.hover_b.endy = 530;
 
     //teclado
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -314,7 +315,7 @@ update(time, delta)
 
     if(this.cursors.space.isDown){
         this.a_select.play();
-
+		this.cameras.main.fadeOut(1000, 0, 0, 0)
         if (this.estado == "play"){
             this.scene.launch("Level");
             this.scene.stop("Menu");

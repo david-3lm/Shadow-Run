@@ -18,6 +18,7 @@ export default class Lobby extends Phaser.Scene {
     }
 
     create(){
+		this.cameras.main.fadeIn(1000, 0, 0, 0)
         this.fondo = this.add.image(400, 300, "busq");
 		this.orbG= this.add.image(400,400,"orbGira").setScale(0.15);
 		this.orb= this.add.image(400,400,"orb").setScale(0.15);
@@ -32,22 +33,23 @@ export default class Lobby extends Phaser.Scene {
 		}
 		this.orbG.rotation+=0.06;
 		//this.orb.rotation+=0.01;
-		console.log(rojo);
-	
-		console.log(this.scene.get('wsManager').rojo);
+
 		rojo= this.scene.get('wsManager').rojo;
 		if(rojo==true) this.fondo=this.add.image(400,300,"rojo");
 		if(rojo==false)this.fondo=this.add.image(400,300,"azul");
 		
         if(this.cursors.space.isDown){
+			this.cameras.main.fadeOut(1000, 0, 0, 0)
 			connection.send("Dale");
 			this.inicioGame();
+			
 		}
     }
     
     inicioGame(){
 			this.scene.launch("CodeLevel");
             this.scene.stop("Lobby");
+            this.scene.stop("MenuBackground");
             rojo=null;
 	}
     

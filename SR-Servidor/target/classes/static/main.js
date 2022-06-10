@@ -11,6 +11,8 @@ import Victoria from "./scenes/victoria.js"
 import Derrota from "./scenes/derrota.js"
 import Lobby from "./scenes/lobby.js"
 import wsManager from "./scenes/wsManager.js"
+import servDesc from "./scenes/servidorDesconex.js"
+import oponenteDesc from "./scenes/oponenteDesconex.js"
 
 window.onload= function(){
 
@@ -23,10 +25,10 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 2000 },
-            debug: true
+            debug: false
         }
     },
-    scene: [Menu, Level, CodeLevel, SceneBackground, MenuBackground, Credits, Code, Config, Tienda, Victoria, Derrota, Lobby,wsManager]
+    scene: [Menu, Level, CodeLevel, SceneBackground, MenuBackground, Credits, Code, Config, Tienda, Victoria, Derrota, Lobby,wsManager, servDesc,oponenteDesc]
 };
 
 var game = new Phaser.Game(config);

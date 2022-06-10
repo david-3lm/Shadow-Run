@@ -109,7 +109,9 @@ preload()
 create()
 {
 	connection=this.scene.get('wsManager').connection;
-	//this.wsConnection();
+	
+	this.cameras.main.fadeIn(1000, 0, 0, 0)
+
 	rojo= this.scene.get('wsManager').rojo;
     this.scene.get("Menu").music.stop();
     //audio para el nivel
@@ -128,8 +130,8 @@ create()
     //configuracion audio
     
     
-    ////activa la musica(audio)
-    // this.musicLvl.play(mConfig);
+    //activa la musica(audio)
+    //this.musicLvl.play(mConfig);
     
     //limites camara (fuera escena)
     this.cameras.main.setBounds(0, -600*5, 900 * 200, 600 * 10);
@@ -199,7 +201,7 @@ create()
     childrenB[6].setPosition(41900,300).setScale(0.5).refreshBody();
     childrenB[7].setPosition(43900,300).setScale(0.5).refreshBody();
     childrenB[8].setPosition(45900,300).setScale(0.5).refreshBody();
-    //this.emitterB.startFollow(childrenB[0]);
+
 
     var childrenR = this.orbGroupR.getChildren();
     childrenR[0].setPosition(3600,530).setScale(0.5).refreshBody();
@@ -211,7 +213,7 @@ create()
     childrenR[6].setPosition(42900,300).setScale(0.5).refreshBody();
     childrenR[7].setPosition(44900,300).setScale(0.5).refreshBody();
     childrenR[8].setPosition(46900,300).setScale(0.5).refreshBody();
-    //this.emitterR.startFollow(childrenR[0]);
+
 
     var childrenB2 = this.orbGroupB2.getChildren();
     childrenB2[0].setPosition(21050,400).setScale(0.5).refreshBody();
@@ -220,7 +222,7 @@ create()
     childrenB2[3].setPosition(42100,300).setScale(0.5).refreshBody();
     childrenB2[4].setPosition(44100,300).setScale(0.5).refreshBody();
     childrenB2[5].setPosition(46100,300).setScale(0.5).refreshBody();
-    //this.emitterB.startFollow(childrenB2[0]);
+
 
     var childrenR2 = this.orbGroupR2.getChildren();
     childrenR2[0].setPosition(21050,540).setScale(0.5).refreshBody();
@@ -229,7 +231,7 @@ create()
     childrenR2[3].setPosition(43100,300).setScale(0.5).refreshBody();
     childrenR2[4].setPosition(45100,300).setScale(0.5).refreshBody();
     childrenR2[5].setPosition(47100,300).setScale(0.5).refreshBody();
-    //this.emitterR.startFollow(childrenR2[0]);
+
 
 
 	//Animaciones de los orbes
@@ -337,7 +339,6 @@ create()
 	this.playerR.jumpKey='jumpR';
 	this.playerR.body.setSize(150);
 
-    //this.playerB= this.physics.add.sprite(0,-300,"dino").setScale(0.5);
     this.playerB= this.physics.add.sprite(500,300,"pj").setScale(0.25); //Solo pàra pruebas eliminar después y usar la de arriba.
 	this.playerB.buff=0;
 	this.playerB.jump=0;
@@ -347,7 +348,6 @@ create()
 	this.playerB.stopKey='idle';
 	this.playerB.jumpKey='jump';
 	this.playerB.body.setSize(150);
-	console.log(this.playerB)
 	
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -416,9 +416,8 @@ create()
 
     //camara que seguirá a jugador
     this.camera=this.cameras.main;
-    //this.camera=this.cameras.main.setSize(900,300);
     this.camera=this.cameras.main.followOffset.set(-100,0);
-    //this.camera2=this.cameras.add(0, 300, 900, 300);
+
 
     // //comprobar overlap con orbes 
     
@@ -485,7 +484,8 @@ update(time, delta)
 
     }
 
-	//SILENCIADO POR WS
+	//LASER
+	
 	/*
     this.laser.y=this.playerB.y;
     this.laser.x+=delta/3;
@@ -493,13 +493,13 @@ update(time, delta)
 	*/
 
     if(this.playerB.y>950){
-        //this.gameOver(this.playerB);
+        this.gameOver(this.playerB);
     }
     if(this.playerR.y>950){
-        //this.gameOver(this.playerR);
+        this.gameOver(this.playerR);
     }
     if(this.playerB.x>48500){
-        //this.victory();
+        this.victory();
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -517,47 +517,32 @@ update(time, delta)
         this.running=false;
     }
 
-    // this.playerR.body.followTarget(this.playerB);
 
 
     //Controles del Jugador
 
 
-    if (this.keyA.isDown)
-        {   
+    if (this.keyA.isDown){   
 		if(rojo==true){
 			this.movimientoI(this.playerR);
 		}else{
 			this.movimientoI(this.playerB);
 		}
-        //if(!this.runningR&&this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
-        /*    
-        this.playerR.setVelocityX(-this.velocityR);
-        this.playerR.flipX = false;
-        //this.cameras.main.followOffset.x = -100;
-        */
-        
-    }
-    else if (this.keyD.isDown)
-        {
+
+    }else if (this.keyD.isDown){
 		if(rojo==true){
 			this.movimientoD(this.playerR);
 		}else{
 			this.movimientoD(this.playerB);
 		}
-        //if(this.runningR!=true)if(this.playerR.body.touching.down) this.playerR.anims.play('runR'); this.runningR=true;
-		/*
-        this.playerR.setVelocityX(this.velocityR);
-        this.playerR.flipX = true;
-        //this.cameras.main.followOffset.x = -200; 
-        */
-        }else if(this.keyD.isUp && this.keyA.isUp ){
+
+    }else if(this.keyD.isUp && this.keyA.isUp ){
         if(rojo==true){
 			this.parar(this.playerR);
 		}else{
 			this.parar(this.playerB);
 		}
-        }
+    }
 
     if (this.keyW.isDown) 
     {
@@ -599,16 +584,15 @@ update(time, delta)
     	this.playerR.body.gravity.y=-2000;
 	    if(this.cursors.space.isDown){
 	        this.tuto=false;
-	        //connection.send("Inicia");
-	        this.playerB.body.gravity.y=0;
-    		this.playerR.body.gravity.y=0;
-	        
+			this.playerR.body.gravity.y=0;
+			this.playerB.body.gravity.y=0;
 	        if(rojo==true){
+			
 	        this.camera=this.cameras.main.startFollow(this.playerR, true, 0.2, 0.2);
 	        }else{
+
 			this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
 			}
-	        //this.camera2.startFollow(this.playerR, true, 0.2, 0.2)
 	        this.musicLvl.play({
 	            mute: false,
 	            volume: 0.15,
@@ -618,7 +602,7 @@ update(time, delta)
 	            loop: true,
 	            delay: 0
 	        });
-	        }
+		}
 	}
  
  	///////////////////////////FUNCION QUE ENVIE POSICIONES//////////////////////// 
@@ -665,6 +649,14 @@ animacion(run,r){
 	}
 }
 
+disconnectPlayer(){
+    this.fin=true;
+    this.musicLvl.stop();
+    this.lostA.play();
+	this.scene.stop("CodeLevel");
+    this.scene.launch("oponenteDesc");
+}
+
 enviarMSG(player){
 	this.wsPlayerPosition(player.x,player.y,player.run,player.right, false, false);
 }
@@ -696,12 +688,12 @@ orbeVelocidadBV(player,orbe) {
         this.emitterPB.startFollow(player);
         this.orbGroupB.killAndHide(orbe);
         orbe.body.enable = false;
-        //this.emitterB.stop();
+
 		
 		
         if(player==this.playerB){
         this.orbFine.play();
-        //this.velocityB=1000;
+
         this.newBuffB=true;
         this.buffB=true;
         //-----------------//
@@ -709,7 +701,7 @@ orbeVelocidadBV(player,orbe) {
         
         }else if(player== this.playerR){
         this.orbBad.play();
-        //this.velocityR=300;
+
         this.newBuffR=true;
         this.buffR=true;
         //----------------//
@@ -727,11 +719,11 @@ orbeVelocidadRV(player,orbe) {
         this.emitterPR.startFollow(player);
         this.orbGroupR.killAndHide(orbe);
         orbe.body.enable = false;
-        //this.emitterR.stop();
+
 
         if(player==this.playerR){
         this.orbFine.play();
-        //this.velocityR=1000;
+
         this.newBuffR=true;
         this.buffR=true;
         //-----------------//
@@ -739,7 +731,7 @@ orbeVelocidadRV(player,orbe) {
         
         }else if(player==this.playerB){
         this.orbBad.play();
-        //this.velocityB=300;
+
         this.newBuffB=true;
         this.buffB=true;
         //-----------------//
@@ -753,17 +745,17 @@ orbeVelocidadBJ(player,orbe) {
         this.emitterPB.startFollow(player);
         this.orbGroupB2.killAndHide(orbe);
         orbe.body.enable = false;
-        //this.emitterB.stop();
+
 
         if(player==this.playerB){
         this.orbFine.play();
-        //this.jumpB=-1200;
+
         player.jump=400;
         this.newBuffB=true;
         this.buffB=true;
         }else if(player== this.playerR){
         this.orbBad.play();
-        //this.velocityR=300;
+
         player.buff=-400;
         this.newBuffR=true;
         this.buffR=true;
@@ -854,6 +846,7 @@ recibeMSGFin(victoriaRoja){
 		}
         
     }
+    this.musicLvl.stop();
     this.scene.get("wsManager").connection.close();
 }
 
@@ -867,14 +860,17 @@ catch(){
 		this.scene.stop("CodeLevel");
     	this.scene.launch("Derrota");
 	}
+	this.musicLvl.stop();
 	this.scene.get("wsManager").connection.close();
 }
 
 victory(){
     this.winA.play();
     this.fin=true;
-    this.add.image(this.playerB.x+200,this.playerB.y,"win").setScale(0.8);
-    this.add.image(this.playerR.x+200,this.playerR.y,"lose").setScale(0.8); 
+    this.musicLvl.stop();
+    this.scene.stop("CodeLevel");
+    this.scene.launch("Victoria");
+    this.victoriaAzul();
 }
 
 getWsPlayerPos(x,y){

@@ -32,6 +32,11 @@ Lobby l=new Lobby();
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		System.out.println("Session closed: " + session.getId());
 		sessions.remove(session.getId());
+		for(WebSocketSession participant: sessions.values()) {
+			if(!participant.getId().equals(session.getId())) {
+				participant.sendMessage(new TextMessage("DesconexionJG"));
+			}
+		}
 		
 	}
 	

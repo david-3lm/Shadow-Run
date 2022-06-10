@@ -25,5 +25,7 @@ public class WsJueguillo implements WebSocketConfigurer{
 	public GameHandler createGameHandler() {
 		return new GameHandler();
 	}
+	
+
 
 }

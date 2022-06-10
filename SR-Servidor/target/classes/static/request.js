@@ -1,4 +1,5 @@
 
+
 window.addEventListener('beforeunload', function (e) {
     desconectarse();
 });
@@ -64,11 +65,11 @@ $("#addMessage").click(function(){
      	url: window.location + "/users",
      	dataType : "html",
      	success: function (data){
+		$('#servDesc').attr('hidden', true);
 		//console.log(data);
 		if(data == "[]"){
        		//console.log("no server data");
         }else{
-		  
 			let count = 0;
 			for (let k in (JSON.parse(data))) if ((JSON.parse(data)).hasOwnProperty(k)) count++;
 			updateObj.currentAux = JSON.parse(data)[count-1].name + ": " + JSON.parse(data)[count-1].message + "<br>";
@@ -79,7 +80,10 @@ $("#addMessage").click(function(){
 	     	}
      	},
      	error : function() {
-         	alert("Error: sin conexion");
+			$('#servDesc').attr('hidden', false);
+         	console.log("mefui")
+
+         	
      	}
     });
    }
