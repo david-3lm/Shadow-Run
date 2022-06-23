@@ -32,17 +32,23 @@ export default class Lobby extends Phaser.Scene {
 			connection=this.scene.get('wsManager').connection;
 		}
 		this.orbG.rotation+=0.06;
+		var listos= false;
 		//this.orb.rotation+=0.01;
 
 		rojo= this.scene.get('wsManager').rojo;
-		if(rojo==true) this.fondo=this.add.image(400,300,"rojo");
-		if(rojo==false)this.fondo=this.add.image(400,300,"azul");
+		if(rojo==true){ 
+			this.fondo=this.add.image(400,300,"rojo"); 
+			listos = true;
+			}
+		if(rojo==false){
+			this.fondo=this.add.image(400,300,"azul"); 
+			listos = true;
+			}
 		
-        if(this.cursors.space.isDown){
+        if(this.cursors.space.isDown && listos== true){
 			this.cameras.main.fadeOut(1000, 0, 0, 0)
 			connection.send("Dale");
 			this.inicioGame();
-			
 		}
     }
     

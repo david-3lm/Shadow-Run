@@ -20,7 +20,7 @@ function user(){
   
   $("#addName").click(function(){
 		if($("#input-username").val()==""){
-			alert("El nombre debe contener algun caracter");
+			$("#error").text("El nombre debe contener algun caracter");
 		}else{
 		    var name = $("#input-username").val();
 		    //console.log(name);
@@ -32,7 +32,7 @@ function user(){
     
 $("#addMessage").click(function(){
 	if(userObj.name == " "){
-		alert(required);
+		$("#error").text("Debes seleccionar nombre")
 	}else if(document.getElementById("input-message").value==""){
 		
 	}else{
@@ -53,7 +53,7 @@ $("#addMessage").click(function(){
           url: window.location + "/users",
           data: objJson,
           contentType: 'application/json; charset=utf-8',
-          //success: function (response) {alert(response);}
+
      });   
   }
     
@@ -101,10 +101,9 @@ $("#addMessage").click(function(){
         
         function checkName(response){
 			if(response==false){
-	      		alert("that name alredy exist");
+	      		$("#error").text("Ese nombre ya existe");
 	    	}
 	    	if(response==true){
-				//alert("connected");   
 		      	userObj.name = $("#input-username").val();
 		      	var obj = {name: userObj.name, message: " is connected"};
 	      		var objJson = JSON.stringify(obj);
@@ -120,16 +119,17 @@ $("#addMessage").click(function(){
 		
 		function desconectarse(){
 			var obj = {name: userObj.name, message: " is disconnected"};
+			if (obj.name!=" "){
 	      		var objJson = JSON.stringify(obj);
 		      	post(objJson);
-			
+			}
 			//console.log(userObj.name);
 			  return $.ajax({
 		          type: "DELETE",
 		          url: window.location + "/nameList/"+userObj.name,
 		          //data: userObj.name,
 		          contentType: 'text/plain',//'String; charset=utf-8',
-		          //success: function (response) {alert(response);}
+
 	        });
 	        
 		}

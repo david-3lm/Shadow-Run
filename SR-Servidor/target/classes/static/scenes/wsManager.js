@@ -47,6 +47,10 @@ export default class wsManager extends Phaser.Scene {
 		this.scene.get('CodeLevel').disconnectPlayer();
 	}
 	
+	inicioSincro(){
+		this.scene.get('CodeLevel').recibeMSGInicio();
+	}
+	
 	wsConnection(){
 	var self = this;
 	var ip="ws://"+ window.location.hostname + ":8080/game";
@@ -71,6 +75,9 @@ export default class wsManager extends Phaser.Scene {
 		
 		 }else if(ms=="DesconexionJG"){
 			self.disconnectJg();
+		 }else if(ms=="Inicia"){
+			self.inicioSincro();
+			
 		 }else
 		 {
 			var fin= JSON.parse(msg.data).fin;

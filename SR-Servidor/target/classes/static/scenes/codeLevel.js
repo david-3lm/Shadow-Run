@@ -10,6 +10,9 @@ var self = null;
 var rojo=null;
 var connection=null;
 
+var timer=null;
+
+
 
 export default class CodeLevel extends Phaser.Scene {
 
@@ -40,6 +43,8 @@ export default class CodeLevel extends Phaser.Scene {
 
         this.camera;
 		
+		this.totalTime= 3;
+
         
     }
 
@@ -100,6 +105,14 @@ preload()
 
     //Tutorial
     this.load.image("tutorial", "assets/sprites/tutorial.png");
+    
+    //Cuenta atras
+	this.load.image("3", "assets/sprites/3.png");
+	this.load.image("2", "assets/sprites/2.png");
+	this.load.image("1", "assets/sprites/1.png");
+	this.load.image("YA", "assets/sprites/YA.png");
+
+    
    
    
 
@@ -396,6 +409,8 @@ create()
         frameRate: 8,
         repeat: -1
     });
+    
+    
 
     this.playerR.anims.play('idleR');
     this.playerB.anims.play('idle');
@@ -405,13 +420,6 @@ create()
 
  
     this.laser= this.physics.add.image(-1500,0,"laser").setScale(2);
-
-
-
-
-
-
-
 
 
     //camara que seguirá a jugador
@@ -486,11 +494,11 @@ update(time, delta)
 
 	//LASER
 	
-	/*
+	
     this.laser.y=this.playerB.y;
     this.laser.x+=delta/3;
     if(this.laser.x>25000)this.laser.x+=delta/2.25;
-	*/
+	
 
     if(this.playerB.y>950){
         this.gameOver(this.playerB);
@@ -583,25 +591,8 @@ update(time, delta)
 		this.playerB.body.gravity.y=-2000;
     	this.playerR.body.gravity.y=-2000;
 	    if(this.cursors.space.isDown){
-	        this.tuto=false;
-			this.playerR.body.gravity.y=0;
-			this.playerB.body.gravity.y=0;
-	        if(rojo==true){
-			
-	        this.camera=this.cameras.main.startFollow(this.playerR, true, 0.2, 0.2);
-	        }else{
-
-			this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
-			}
-	        this.musicLvl.play({
-	            mute: false,
-	            volume: 0.15,
-	            rate: 1,
-	            detune: 0,
-	            seek: 0,
-	            loop: true,
-	            delay: 0
-	        });
+	    	connection.send("Inicia");
+	        this.updateClock();       
 		}
 	}
  
@@ -613,11 +604,73 @@ update(time, delta)
    	
    	
    	//////////////////////////FUERA DEL UPDATE FUNCION QUE ACTUALICE EL OTRO JUGADOR////////////
+   	if(timer != null){
+   	this.cuentaAtras(timer)
+   	}
+}
+
+
+
+
+updateClock() {
+	//var timer = this.time.addEvent({delay: 4000, callback: this.inicioGame,callbackScope: this});	
+	timer = this.time.delayedCall(3000, this.inicioGame, [], this);
+	
+	this.cuentaAtras(timer)
+}
+
+
+cuentaAtras(timer){
+	var t= timer.getProgress().toString().substr(0,4);
+	this.img
+	this.tres
+	this.dos
+	this.uno
+	this.tt.destroy();
+	switch (t){
+		case "0.01": 
+			this.tres= this.add.image(400,160, "3").setScale(0.5)
+			break;
+
+		case "0.35": 
+			this.dos=this.add.image(400,160, "2").setScale(0.6)
+			break;
+		case "0.70": 
+			this.dos.destroy();
+			this.uno= this.add.image(420,160, "1").setScale(1.2)
+			break;
+		case "0.99":
+			this.uno.destroy() 
+			this.img=this.add.image(400,160, "YA").setScale(1.2)
+			break;
+		default:
+			break;
+	}
+		
+	
 }
 
 inicioGame(){
+	
 	this.tuto=false;
-	this.grav=0;
+	this.playerR.body.gravity.y=0;
+	this.playerB.body.gravity.y=0;
+	if(rojo==true){
+			
+        this.camera=this.cameras.main.startFollow(this.playerR, true, 0.2, 0.2);
+	}else{
+
+		this.camera=this.cameras.main.startFollow(this.playerB, true, 0.2, 0.2);
+	}
+    this.musicLvl.play({
+        mute: false,
+        volume: 0.15,
+        rate: 1,
+        detune: 0,
+        seek: 0,
+        loop: true,
+        delay: 0
+    });
     
 }
 
@@ -824,6 +877,11 @@ gameOver(player){
     this.scene.get("wsManager").connection.close();
     
 }
+recibeMSGInicio(){
+	this.updateClock();
+	
+}
+
 
 recibeMSGFin(victoriaRoja){
 	
@@ -869,6 +927,7 @@ victory(){
     this.fin=true;
     this.musicLvl.stop();
     this.scene.stop("CodeLevel");
+    this.scene.stop("SceneBackground");
     this.scene.launch("Victoria");
     this.victoriaAzul();
 }

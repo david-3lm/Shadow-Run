@@ -11,19 +11,21 @@
     
 
 </head>
-<body style="background-color:#bacee3">
-
-<div id='id1' style='display: inline-block; border: 20px solid #10105f; height:600px; width:800px'>
+<body>
+<div id='id1' >
 	<img id= 'servDesc' src = './assets/menu/SERVIDOR_DESCONECTADO.png' style= 'position: absolute; padding-left:100px'
 	hidden= 'true'>
 </div>
 <div id='chat' style='display: inline-block'>
+		<div id ="border_nombre">
 		<p>Introduce un nombre de usuario para acceder al chat </p>
 		<label for="username">Username</label>
 		<input type="text" id="input-username" placeholder="Your username here!">
-		<button id="addName">connect</button>
+		<button id="addName">Connect</button>
+		</div >
+		<p id="error"></p>
 		<p>CHAT:</p>
-			<div style='border: 2px solid #000000; padding:10px; height:450px; width:400px'>
+			<div id= 'border_chat'>
         	<ul id="users"></ul>  
         	</div> 
 		<p>
@@ -32,5 +34,86 @@
 		<button id = "addMessage">Let's Chat!!</button>
 		<button id = "disconnect">Disconnect</button>
 </div>
+
 </body>
+
+ <style>
+		@import url('https://fonts.googleapis.com/css2?family=Kdam+Thmor+Pro&family=Oswald:wght@700&family=Roboto+Condensed&display=swap');
+
+		html *
+		{
+		   font-family: 'Kdam Thmor Pro', sans-serif;
+		}
+        body {
+			
+			color:white;
+            margin: 0;
+            padding: 0;
+            display: inline-flex;
+
+            margin:5%;
+            justify-content: center;
+            align-items: center;
+            background-color: #111;
+            font-family: sans-serif;
+        }
+ 
+
+        #id1{
+
+			display: inline-flex;
+			height:600px;
+			width:800px;
+			font-family: sans-serif;
+			border: 6px solid #ffffff;
+			margin-right:40px;
+            color: #800000;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-size: 3em;
+            overflow: hidden;
+            color: #111;
+            background: #111;
+            box-shadow: 0 0 100px #b23ac4;
+        }
+        
+        #border_nombre{
+
+			border: 2px solid #ffffff;
+			padding-left:10px;
+			padding-bottom:10px;
+			height:auto;
+			width:400px;
+			box-shadow: 0 0 100px #97473f;
+	
+		}
+		#border_chat{
+
+			border: 2px solid #ffffff;
+			padding-left:10px;
+			height:450px;
+			width:400px;
+			box-shadow: 0 0 100px #52d4f4;
+	
+		}
+		
+		button{
+
+			background-color: rgb(45, 45, 45);
+			color: white;
+		}
+		
+		#addName{
+			box-shadow: 0 0 10px #97473f;
+		}
+		
+		#error{
+			font-size:23px;
+			color: #fc143c;
+			text-shadow: 0 0 20px black;
+		}
+        
+
+    </style>
 </html>
