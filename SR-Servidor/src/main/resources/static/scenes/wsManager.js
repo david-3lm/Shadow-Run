@@ -6,14 +6,15 @@ export default class wsManager extends Phaser.Scene {
 	rojo= null;
 	partidaIniciada=false;
 	tutoFin=false;
-	cont= 0;
 	
 	connection;
 	 constructor() {
         super({key: "wsManager"});
     
     	this.connection=null;
+    	this.partidaIniciada=false;
     	this.rojo=null;
+    	this.cont=0;
 	}
     preload(){
 	console.log("Escena cargada");
@@ -30,6 +31,8 @@ export default class wsManager extends Phaser.Scene {
 	}
 	
 	inicioPartida(){
+		this.partidaIniciada = true;
+		console.log(this.partidaIniciada)
 		this.scene.get('Lobby').inicioGame();
 	}
 	
@@ -51,6 +54,8 @@ export default class wsManager extends Phaser.Scene {
 		this.scene.get('CodeLevel').recibeMSGInicio();
 	}
 	
+	
+	
 	wsConnection(){
 	var self = this;
 	var ip="ws://"+ window.location.hostname + ":8080/game";
@@ -66,14 +71,18 @@ export default class wsManager extends Phaser.Scene {
 		
 		this.connection.onmessage = function(msg){
 		 var ms= msg.data;
+		 console.log(ms);
 		 if(ms=="r" || ms=="a"){
 		 	self.selectorRol(msg.data);
 
-		 }else if(!this.partidaIniciada){
-			this.partidaIniciada=true;
+		 }else if(!this.partidaIniciada && ms== "Dale"){
+			console.log(this.partidaIniciada)
 			self.inicioPartida();
+			this.partidaIniciada=true;
+			
 		
-		 }else if(ms=="DesconexionJG"){
+		 }else if(msg.data=="DesconexionJG"){
+			console.log("Desconectado")
 			self.disconnectJg();
 		 }else if(ms=="Inicia"){
 			self.inicioSincro();
@@ -99,10 +108,13 @@ export default class wsManager extends Phaser.Scene {
 		this.connection.onclose = function() {
 			
 			console.log("Closing socket");
+
+			
 			self.rojo=null;
 		}
 		this.connection.onopen = function() {
 			 console.log("Conexion creada");
+			 			
 			 self.rojo=null;
 		}
 			    

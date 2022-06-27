@@ -31,6 +31,8 @@ export default class Lobby extends Phaser.Scene {
 		if(connection==null){
 			connection=this.scene.get('wsManager').connection;
 		}
+		//console.log(this.scene.get('wsManager').cont)
+		
 		this.orbG.rotation+=0.06;
 		var listos= false;
 		//this.orb.rotation+=0.01;
@@ -48,11 +50,13 @@ export default class Lobby extends Phaser.Scene {
         if(this.cursors.space.isDown && listos== true){
 			this.cameras.main.fadeOut(1000, 0, 0, 0)
 			connection.send("Dale");
-			this.inicioGame();
+			this.scene.get('wsManager').inicioPartida()
+			//this.inicioGame();
 		}
     }
     
     inicioGame(){
+
 			this.scene.launch("CodeLevel");
             this.scene.stop("Lobby");
             this.scene.stop("MenuBackground");

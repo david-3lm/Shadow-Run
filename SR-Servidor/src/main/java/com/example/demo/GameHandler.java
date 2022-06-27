@@ -18,12 +18,19 @@ private Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
 
 Lobby l=new Lobby();
 
+
 	
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+		
+		if(sessions.size()>=2) {
+			while(sessions.size()>0) ;
+		}
 		System.out.println("New session: " + session.getId());
+		
 		l.addPlayer(session);
 		sessions.put(session.getId(), session);
+		
 		
 		
 	}
@@ -37,7 +44,6 @@ Lobby l=new Lobby();
 				participant.sendMessage(new TextMessage("DesconexionJG"));
 			}
 		}
-		
 	}
 	
 	@Override

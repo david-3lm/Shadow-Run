@@ -705,6 +705,7 @@ animacion(run,r){
 disconnectPlayer(){
     this.fin=true;
     this.musicLvl.stop();
+    this.scene.get("wsManager").connection.close();
     this.lostA.play();
 	this.scene.stop("CodeLevel");
     this.scene.launch("oponenteDesc");
