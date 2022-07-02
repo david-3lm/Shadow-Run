@@ -11,10 +11,11 @@
 	<groupId>com.example</groupId>
 	<artifactId>Juegillo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Juegillo</name>
+	<packaging>jar</packaging>
+	<name>ShadowRun</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>8</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

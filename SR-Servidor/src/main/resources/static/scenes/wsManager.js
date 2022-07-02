@@ -17,7 +17,7 @@ export default class wsManager extends Phaser.Scene {
     	this.cont=0;
 	}
     preload(){
-	console.log("Escena cargada");
+
     }
 
     create(){
@@ -32,7 +32,6 @@ export default class wsManager extends Phaser.Scene {
 	
 	inicioPartida(){
 		this.partidaIniciada = true;
-		console.log(this.partidaIniciada)
 		this.scene.get('Lobby').inicioGame();
 	}
 	
@@ -61,7 +60,6 @@ export default class wsManager extends Phaser.Scene {
 	var ip="ws://"+ window.location.hostname + ":8080/game";
 	if(this.connection==null){
 		this.connection = new WebSocket(ip);
-		//this.connection = new WebSocket('ws://192.168.1.157:8080/game');
 		self.rojo=null;
 	}
 	
@@ -71,18 +69,15 @@ export default class wsManager extends Phaser.Scene {
 		
 		this.connection.onmessage = function(msg){
 		 var ms= msg.data;
-		 console.log(ms);
 		 if(ms=="r" || ms=="a"){
 		 	self.selectorRol(msg.data);
 
 		 }else if(!this.partidaIniciada && ms== "Dale"){
-			console.log(this.partidaIniciada)
 			self.inicioPartida();
 			this.partidaIniciada=true;
 			
 		
 		 }else if(msg.data=="DesconexionJG"){
-			console.log("Desconectado")
 			self.disconnectJg();
 		 }else if(ms=="Inicia"){
 			self.inicioSincro();

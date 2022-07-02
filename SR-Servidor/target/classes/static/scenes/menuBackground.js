@@ -6,7 +6,7 @@ export default class MenuBackground extends Phaser.Scene {
     preload() {
         this.load.image('sky', 'assets/sprites/Background.png');
 
-        this.load.image('Backbuilds', 'assets/sprites/Backbuildings.png');
+        this.load.image('Backbuilds', 'assets/sprites/BackBuildings.png');
 
         this.load.image('Builds3', 'assets/sprites/Back2Bs.png');
 
@@ -156,7 +156,6 @@ export default class MenuBackground extends Phaser.Scene {
         //cursor
         this.cursor = this.input.keyboard.createCursorKeys();
 
-        console.log(this.fogfront1);
        
     }
     update(time, delta) {
