@@ -1,5 +1,7 @@
 # Shadow-Run
 Este es el repositorio de Shadow Run, un runner de plataformas 2D para dos jugadores en el que uno persigue a otro a lo largo del nivel.
+
+Video presentación: https://youtu.be/RA3CEuJYxmI
 # Integrantes
 - Iván Gómez Ortega (i.gomezo.2019@alumnos.urjc.es) // ividraco17
 - David López López (d.lopezl.2019@alumnos.urjc.es) //  david-3lm
